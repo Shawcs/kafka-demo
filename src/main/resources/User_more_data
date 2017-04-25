@@ -1,0 +1,7 @@
+{"number":"6","type":"error","content":"error in parsing data"}
+{"number":"7","type":"critical_error","content":"failed launch"}
+{"number":"8","type":"compilation","content":"compilation succeed"}
+{"number":"9","type":"critical_error","content":"failed to run app"}
+{"number":"10","type":"error","content":"can't cast to int"}
+{"number":"11","type":"critical_error","content":"build fail"}
+{"number":"12","type":"success","content":"build succeed"}
