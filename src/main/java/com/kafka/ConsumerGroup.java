@@ -5,6 +5,7 @@ import org.apache.zookeeper.ZooKeeper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class ConsumerGroup {
     private final String topic;
     private final String brokers;
     private List<ConsumerTopic> consumers;
-
+    private static  final String ZookeeperId="localhost:2181";
 
     public ConsumerGroup(String brokers, String groupId, String topic) {
         this.brokers = brokers;
@@ -47,11 +48,10 @@ public class ConsumerGroup {
     public int getNumberOfPartition() {
 
         try {
-            ZooKeeper zk = new ZooKeeper("localhost:2181", 1000, null, false);
+            ZooKeeper zk = new ZooKeeper(ZookeeperId, 1000, null, false);
             String zkNodeName = "/brokers/topics/" + topic + "/partitions";
             try {
-                int numPartiton = zk.getChildren(zkNodeName, false).size();
-                return numPartiton;
+                return  zk.getChildren(zkNodeName, false).size();
             } catch (KeeperException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -67,10 +67,9 @@ public class ConsumerGroup {
     //useful functions to get information from zookeeper
     public List<String> getBorkerList() {
         try {
-            ZooKeeper zk = new ZooKeeper("localhost:2181", 1000, null, false);
+            ZooKeeper zk = new ZooKeeper(ZookeeperId, 1000, null, false);
             String zkNodeName = "/brokers/ids";
-            List<String> Brokers = zk.getChildren(zkNodeName, false);
-            return Brokers;
+           return zk.getChildren(zkNodeName, false);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -78,17 +77,16 @@ public class ConsumerGroup {
         } catch (KeeperException e) {
             e.printStackTrace();
         }
-        return null;
+        return Collections.emptyList();
     }
 
     //useful functions to get information from zookeeper
     public List<String> getTopicList() {
         ZooKeeper zk = null;
         try {
-            zk = new ZooKeeper("localhost:2181", 1000, null, false);
+            zk = new ZooKeeper(ZookeeperId, 1000, null, false);
             String zkNodeName = "/brokers/topics";
-            List<String> TopicsList = zk.getChildren(zkNodeName, false);
-            return TopicsList;
+            return  zk.getChildren(zkNodeName, false);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -97,7 +95,7 @@ public class ConsumerGroup {
             e.printStackTrace();
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     /**

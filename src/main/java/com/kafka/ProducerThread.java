@@ -57,12 +57,12 @@ public class ProducerThread implements Runnable {
      * This function is used to generate the message Key (it's a part of the meta data of a broker/message) based on the Type field
      **/
     public static String setKeyValue(String RecordValue) {
-        String key = null;
+        String key ;
         ObjectMapper mapper = new ObjectMapper();
-        Ticket t = null;
+        Ticket currentTicket = null;
         try {
 
-            t = mapper.readValue(RecordValue, Ticket.class);
+            currentTicket = mapper.readValue(RecordValue, Ticket.class);
 
         } catch (JsonGenerationException e) {
             e.printStackTrace();
@@ -72,7 +72,7 @@ public class ProducerThread implements Runnable {
             e.printStackTrace();
         }
 
-        String type = t.getType();
+        String type = currentTicket.getType();
         if (type.equals("error")) {
             key = "E";
         } else if (type.equals("warning")) {
@@ -104,7 +104,7 @@ public class ProducerThread implements Runnable {
     }
 
     //TODO put those two method in a separated class
-
+@Override
     public void run() {
         try {
             // Read file in order to fake the  data flow
@@ -122,7 +122,6 @@ public class ProducerThread implements Runnable {
             while ((strLine = bufferedReader.readLine()) != null) {
                 i = i + 1;
 
-                final String finalStrLine = strLine;
                 final String finalStrLine1 = strLine;//To display it in the loop
                 final int finalI = i;//To display it in the loop
 
@@ -144,11 +143,13 @@ public class ProducerThread implements Runnable {
                 } catch (InterruptedException ie) {
                     ie.printStackTrace();
                 }
+                bufferedReader.close(); //see if this don't block anything
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         } finally {
             producer.close();
+
         }
     }
 
