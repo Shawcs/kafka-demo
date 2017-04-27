@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SonarLintProjectSettings">
+    <option name="additionalProperties">
+      <map>
+        <entry key="rg" value="rg" />
+      </map>
+    </option>
+    <option name="analysisLogsEnabled" value="true" />
     <option name="bindingEnabled" value="true" />
+    <option name="projectKey" value="kafka_demo" />
     <option name="serverId" value="test server" />
   </component>
 </project>

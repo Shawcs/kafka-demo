@@ -4,7 +4,7 @@ package com.kafka;
 //schema registry http://docs.confluent.io/1.0/schema-registry/docs/serializer-formatter.html
 //partitionner http://howtoprogram.xyz/2016/06/04/write-apache-kafka-custom-partitioner/
 
-import com.Serialiser.Ticket;
+import com.serialiser.Ticket;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +12,8 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Properties;
@@ -24,6 +26,7 @@ import static java.lang.Thread.currentThread;
  */
 public class ProducerThread implements Runnable {
 
+    final Logger logger = LoggerFactory.getLogger(ProducerThread.class);
     private final KafkaProducer<String, String> producer;
     private final String topic;
     private final String DATA_SOURCE;
@@ -32,7 +35,7 @@ public class ProducerThread implements Runnable {
     public ProducerThread(String brokers, String topic, String data_source) {
 
         Properties prop = createProducerConfig(brokers);
-        this.producer = new KafkaProducer<String, String>(prop);
+        this.producer = new KafkaProducer<>(prop);
         this.topic = topic;
         this.DATA_SOURCE = data_source; //we added source because we fake stream and we are ready a file
         this.BROKERS = brokers;
@@ -56,28 +59,27 @@ public class ProducerThread implements Runnable {
     /**
      * This function is used to generate the message Key (it's a part of the meta data of a broker/message) based on the Type field
      **/
-    public static String setKeyValue(String RecordValue) {
+    public  String setKeyValue(String recordValue) throws JsonMappingException {
         String key ;
         ObjectMapper mapper = new ObjectMapper();
         Ticket currentTicket = null;
         try {
-
-            currentTicket = mapper.readValue(RecordValue, Ticket.class);
-
+            currentTicket = mapper.readValue(recordValue, Ticket.class);
         } catch (JsonGenerationException e) {
-            e.printStackTrace();
+            logger.debug("Json exception "+e);
         } catch (JsonMappingException e) {
-            e.printStackTrace();
+            logger.debug("Json map "+e);
         } catch (IOException e) {
-            e.printStackTrace();
+          logger.debug("Io exception "+e);
         }
 
-        String type = currentTicket.getType();
-        if (type.equals("error")) {
+    String type = currentTicket.getType();
+
+        if ("Error".equals(type)) {
             key = "E";
-        } else if (type.equals("warning")) {
+        } else if ("Warning".equals(type)) {
             key = "W";
-        } else if (type.equals("critical_error")) {
+        } else if ("critical_error".equals(type)) {
             key = "CE";
         } else {
             key = "ND";
@@ -88,14 +90,14 @@ public class ProducerThread implements Runnable {
     /**
      * This function is used to check the key of the message and set the partition id linked to this key
      **/
-    public static int SetPartitionID(String KeyValue) {
+    public static int setPartitionID(String keyvalue) {
         int partitionId;
 
-        if (KeyValue.equals("E")) {
+        if ("E".equals(keyvalue)) {
             partitionId = 2;
-        } else if (KeyValue.equals("W")) {
+        } else if ("W".equals(keyvalue)) {
             partitionId = 1;
-        } else if (KeyValue.equals("CE")) {
+        } else if ("CE".equals(keyvalue)) {
             partitionId = 0;
         } else {
             partitionId = 3;
@@ -106,18 +108,19 @@ public class ProducerThread implements Runnable {
     //TODO put those two method in a separated class
 @Override
     public void run() {
+    Reader fileReader = null;
         try {
             // Read file in order to fake the  data flow
-            Reader FileReader = null;
             try {
-                FileReader = new InputStreamReader(new FileInputStream(DATA_SOURCE));
+                fileReader = new InputStreamReader(new FileInputStream(DATA_SOURCE));
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                logger.debug("file "+e);
             }
-            BufferedReader bufferedReader = new BufferedReader(FileReader);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
             String strLine;
             int i = 0;
 
+            logger.info("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
             System.out.println("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
             while ((strLine = bufferedReader.readLine()) != null) {
                 i = i + 1;
@@ -126,14 +129,18 @@ public class ProducerThread implements Runnable {
                 final int finalI = i;//To display it in the loop
 
                 //it's our simple custom key generator and serializer
-                String KeyValue = setKeyValue(strLine);
-                int PartitionNbr = SetPartitionID(KeyValue);
+                String keyValue = setKeyValue(strLine);
+                int partitionNbr = setPartitionID(keyValue);
 
-                producer.send(new ProducerRecord<>(topic, PartitionNbr, KeyValue, strLine), new Callback() {
+                producer.send(new ProducerRecord<>(topic, partitionNbr, keyValue, strLine), new Callback() {
+                    @Override
                     public void onCompletion(RecordMetadata metadata, Exception e) {
                         if (e != null) {
-                            e.printStackTrace();
+                          logger.info("error on completion "+e);
                         }
+                        logger.info("\n Sent message: \n ##########" + finalStrLine1 + "\n to, Partition: " + metadata.partition() + ", Offset: "
+                                        + metadata.offset() + ",key " + finalI + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
+
                         System.out.println("\n Sent message: \n ##########" + finalStrLine1 + "\n to, Partition: " + metadata.partition() + ", Offset: "
                                 + metadata.offset() + ",key " + finalI + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
                     }
@@ -141,15 +148,20 @@ public class ProducerThread implements Runnable {
                 try {
                     Thread.sleep(1000); //to avoid flood in console
                 } catch (InterruptedException ie) {
-                    ie.printStackTrace();
+                    logger.debug("exception  "+ie);
                 }
-                bufferedReader.close(); //see if this don't block anything
             }
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            logger.debug("throw except  "+throwable);
         } finally {
             producer.close();
-
+            if(fileReader!=null) {
+                try {
+                    fileReader.close();//see if this not blocking
+                } catch (IOException e) {
+                    logger.debug("file reader closing"+e);
+                }
+            }
         }
     }
 

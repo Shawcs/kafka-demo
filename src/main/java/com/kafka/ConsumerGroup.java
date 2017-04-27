@@ -2,6 +2,8 @@ package com.kafka;
 
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class ConsumerGroup {
     private final String brokers;
     private List<ConsumerTopic> consumers;
     private static  final String ZookeeperId="localhost:2181";
+
+    final Logger logger = LoggerFactory.getLogger(ConsumerGroup.class);
 
     public ConsumerGroup(String brokers, String groupId, String topic) {
         this.brokers = brokers;
@@ -52,14 +56,11 @@ public class ConsumerGroup {
             String zkNodeName = "/brokers/topics/" + topic + "/partitions";
             try {
                 return  zk.getChildren(zkNodeName, false).size();
-            } catch (KeeperException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (KeeperException|InterruptedException e ) {
+                logger.debug("trouble with zookeeper "+e);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        }catch (IOException e) {
+            logger.debug("In/out exception "+e);
         }
         return 0;
     }
@@ -70,12 +71,10 @@ public class ConsumerGroup {
             ZooKeeper zk = new ZooKeeper(ZookeeperId, 1000, null, false);
             String zkNodeName = "/brokers/ids";
            return zk.getChildren(zkNodeName, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (IOException|InterruptedException e) {
+            logger.debug("In/out exception "+e);
         } catch (KeeperException e) {
-            e.printStackTrace();
+            logger.debug("Zookeeper error "+e);
         }
         return Collections.emptyList();
     }
@@ -87,12 +86,11 @@ public class ConsumerGroup {
             zk = new ZooKeeper(ZookeeperId, 1000, null, false);
             String zkNodeName = "/brokers/topics";
             return  zk.getChildren(zkNodeName, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (KeeperException e) {
-            e.printStackTrace();
+        } catch (IOException|InterruptedException e) {
+            logger.debug("exception "+e);
+        }
+        catch (KeeperException ez) {
+            logger.debug("Zookeeper error "+ez);
         }
 
         return Collections.emptyList();

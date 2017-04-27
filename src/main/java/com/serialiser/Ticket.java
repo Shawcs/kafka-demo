@@ -1,4 +1,4 @@
-package com.Serialiser;
+package com.serialiser;
 
 /**
  * Created by aturbillon on 19/04/2017.
