@@ -75,6 +75,11 @@
             <version>1.5.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>connect-api</artifactId>
+            <version>0.10.2.0</version>
+        </dependency>
 
     </dependencies>
 
