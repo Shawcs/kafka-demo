@@ -1,5 +1,0 @@
-projectKey=kafka_demo:kafka-examples
-serverUrl=http://localhost:9000
-dashboardUrl=http://localhost:9000/dashboard/index/kafka_demo:kafka-examples
-ceTaskId=AVuunbhjfNMZF3_Gcjgq
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AVuunbhjfNMZF3_Gcjgq
