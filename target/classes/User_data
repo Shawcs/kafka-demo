@@ -1,4 +1,4 @@
-{"number":"1","type":"error","content":"error in the method"}
+{"number":"1","type":"Error","content":"error in the method"}
 {"number":"2","type":"critical_error","content":"failed to build"}
 {"number":"3","type":"warning","content":"warning in your class"}
 {"number":"4","type":"critical_error","content":"your program as crashed"}

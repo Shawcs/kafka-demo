@@ -1,14 +1,26 @@
 package com.kafka;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * Created by aturbillon on 07/04/2017.
  */
 public class MainProducerConsumerPartition {
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException {
 
         //properties for the servers
-        String brokers = "localhost:9092,localhost:9093,localhost:9094";
+    //    String brokers = "localhost:9092,localhost:9093,localhost:9094";
+//with this we get the kafka broker values
+        Properties properties = new Properties();
+        InputStream inputStream = MainProducerConsumerPartition.class.getClassLoader()
+                .getResourceAsStream("kafka_broker.properties");
+        properties.load(inputStream);
+
+       String brokers= String.valueOf(properties.get("BROKER"));
 
         //properties for the topic
         int replicationFactor = 2;//r factor max = Nbroker -1
@@ -17,7 +29,7 @@ public class MainProducerConsumerPartition {
         //properties for the producer
         String groupId = "test";
         String topic = "Ticket";
-        String path = "/home/kafka/Téléchargements/KAFKA_demo/src/main/resources/User_data";
+        String path = String.valueOf(properties.get("FILE_PATH"));
 
         //creation of the topic
         TopicCreation t = new TopicCreation(topic, partitionNumber, replicationFactor);
@@ -34,7 +46,6 @@ public class MainProducerConsumerPartition {
                 new ConsumerThread(brokers, groupId, topic, 0); //i will specify witch partition we read
         Thread consumerPartition0 = new Thread(consumerPart0);
 
-
         ConsumerThread consumerPart1 =
                 new ConsumerThread(brokers, groupId, topic, 1); //i will specify witch partition we read
         Thread consumerPartition1 = new Thread(consumerPart1);
@@ -48,27 +59,13 @@ public class MainProducerConsumerPartition {
         Thread consumerPartition3 = new Thread(consumerPart3);
 
 
-        //the synchronization part of all the thread
-        try {
-            TopicCreation.join();
-            CreateProducer.start();
-            CreateProducer.join();
+        //the launching part of all the thread
+        CreateProducer.start();
 
-            consumerPartition0.start();
-            consumerPartition1.start();
-            consumerPartition2.start();
-            consumerPartition3.start();
-
-
-            consumerPartition0.join();
-            consumerPartition1.join();
-            consumerPartition2.join();
-            consumerPartition3.join();
-
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        consumerPartition0.start();
+        consumerPartition1.start();
+        consumerPartition2.start();
+        consumerPartition3.start();
 
         try {
             Thread.sleep(1000);

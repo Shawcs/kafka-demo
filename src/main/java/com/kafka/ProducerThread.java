@@ -75,11 +75,11 @@ public class ProducerThread implements Runnable {
 
     String type = currentTicket.getType();
 
-        if ("Error".equals(type)) {
+        if ("error".equals(type.toLowerCase())) {
             key = "E";
-        } else if ("Warning".equals(type)) {
+        } else if ("warning".equals(type.toLowerCase())) {
             key = "W";
-        } else if ("critical_error".equals(type)) {
+        } else if ("critical_error".equals(type.toLowerCase())) {
             key = "CE";
         } else {
             key = "ND";
@@ -121,8 +121,7 @@ public class ProducerThread implements Runnable {
             int i = 0;
 
             logger.info("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
-            System.out.println("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
-            while ((strLine = bufferedReader.readLine()) != null) {
+        while ((strLine = bufferedReader.readLine()) != null) {
                 i = i + 1;
 
                 final String finalStrLine1 = strLine;//To display it in the loop
@@ -141,9 +140,7 @@ public class ProducerThread implements Runnable {
                         logger.info("\n Sent message: \n ##########" + finalStrLine1 + "\n to, Partition: " + metadata.partition() + ", Offset: "
                                         + metadata.offset() + ",key " + finalI + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
 
-                        System.out.println("\n Sent message: \n ##########" + finalStrLine1 + "\n to, Partition: " + metadata.partition() + ", Offset: "
-                                + metadata.offset() + ",key " + finalI + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
-                    }
+                         }
                 });
                 try {
                     Thread.sleep(1000); //to avoid flood in console

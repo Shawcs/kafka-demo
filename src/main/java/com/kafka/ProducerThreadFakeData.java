@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 
 import static java.lang.Thread.currentThread;
@@ -22,6 +23,9 @@ import static java.lang.Thread.currentThread;
  * Created by aturbillon on 07/04/2017.
  */
 public class ProducerThreadFakeData implements Runnable {
+
+    public static final String ANSI_RESET = "\u001B[0m";//just to put some colors in the prompt and because i have time to do it !
+    public static final String ANSI_GREEN = "\u001B[32m";
 
     final Logger logger = LoggerFactory.getLogger(ProducerThreadFakeData.class);
     private final KafkaProducer<String, String> producer;
@@ -39,8 +43,8 @@ public class ProducerThreadFakeData implements Runnable {
     private static Properties createProducerConfig(String brokers) {
         Properties props = new Properties();
         props.put("bootstrap.servers", brokers);
-        props.put("acks", "all");
-        props.put("retries", 0);
+        props.put("acks", "all"); //guarantees that not only did the partition leader accept the write, but it was successfully replicated to all of the in-sync replicas
+        props.put("retries", 0);//value larger than 0 (which is the default), then message reordering may occur since the retry may occur after a following write succeeded
         props.put("batch.size", 16384);
         props.put("linger.ms", 1);
         props.put("buffer.memory", 33554432);
@@ -53,10 +57,9 @@ public class ProducerThreadFakeData implements Runnable {
 
 @Override
     public void run() {
-        try {
+        int i = 0;
+        while(true){
             logger.info("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
-            System.out.println("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
-
                 String record =  fakeRecord(); //we create a fake record
 
                 producer.send(new ProducerRecord<>(topic,record ), new Callback() {
@@ -67,26 +70,25 @@ public class ProducerThreadFakeData implements Runnable {
                         }
                         logger.info("\n Sent message: \n ##########" + record + "\n to, Partition: " + metadata.partition() + ", Offset: "
                                         + metadata.offset() + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
-
-                        System.out.println("\n Sent message: \n ##########" + record + "\n to, Partition: " + metadata.partition() + ", Offset: "
-                                + metadata.offset() + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
                     }
                 });
+                i++;
                 try {
                     Thread.sleep(1000); //to avoid flood in console
                 } catch (InterruptedException ie) {
                     logger.debug("exception  "+ie);
                 }
+                if(i>=100000||record == null){ //we block the loop if we go over i nbr of data send it's just in case you forget to stop the thread in order to not over flow the memory
+                    logger.debug("exception record null");
+                    break;
+                }
             }
-         finally {
-            producer.close();
-        }
     }
 
 
     //you can produce fake record with this function. You have a lot of field that you can generate they are all in recordGenerator folder see https://github.com/DiUS/java-faker for more details
     public String fakeRecord(){
-        Faker faker = new Faker();
+        Faker faker = new Faker(new Locale("fr"));
 
             String name = faker.name().fullName();
             Date birthDate = faker.date().birthday();
@@ -95,7 +97,8 @@ public class ProducerThreadFakeData implements Runnable {
             String phoneNumber = faker.phoneNumber().cellPhone();
             String creditCard = faker.finance().creditCard();
 
-            String record = name + ", " + birthDate + ", " + emailAddress + ", " + phoneNumber + ", "+ streetAddress+", "+ creditCard ;
+            String record =ANSI_GREEN+"Name: " +ANSI_RESET+ name +ANSI_GREEN+ "/ Birth: " +ANSI_RESET+ birthDate +ANSI_GREEN+ "/ Email: " +ANSI_RESET+ emailAddress +
+                    ANSI_GREEN+ " / Phone " +ANSI_RESET+ phoneNumber +ANSI_GREEN+ " / Street: "+ANSI_RESET+ streetAddress+ANSI_GREEN+" / Credit Card: "+ ANSI_RESET+creditCard ;
 
             System.out.println(record);
             return record;

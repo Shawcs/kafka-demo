@@ -4,6 +4,7 @@ package com.streams;
  * Created by aturbillon on 24/04/2017.
  */
 
+import com.kafka.MainProducerConsumerPartition;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -12,6 +13,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KTable;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -50,7 +52,13 @@ public class WordCountLambdaExample {
     public  static final String TOPIC_NAME="Ticket";
 
     public static void main(final String[] args) throws Exception {
-        final String bootstrapServers = args.length > 0 ? args[0] : "localhost:9092,localhost:9093,localhost:9094";
+        Properties properties = new Properties();
+        InputStream inputStream = MainProducerConsumerPartition.class.getClassLoader()
+                .getResourceAsStream("kafka_broker.properties");
+        properties.load(inputStream);
+        String brokers= String.valueOf(properties.get("BROKER"));
+
+        final String bootstrapServers = brokers;
         final Properties streamsConfiguration = new Properties();
         // Give the Streams application a unique name.  The name must be unique in the Kafka cluster
         // against which the application is run.
