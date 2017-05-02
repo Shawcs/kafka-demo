@@ -3,7 +3,7 @@ package com.serialiser;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javafaker.Faker;
+import com.recordGenerator.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +23,10 @@ public class Main {
 
 
         Faker faker = new Faker();
-        for(int i=0;i<100;i++) {
-            String name = faker.name().fullName();
+        for(int i=0;i<100;i++) { String name = faker.name().fullName();
             String streetAddress = faker.address().streetAddress();
             String emailAddress = faker.internet().emailAddress();
+
 
             System.out.println(name + "; " + streetAddress + "; " + emailAddress+"; ");
         }

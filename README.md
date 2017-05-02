@@ -1,12 +1,13 @@
 
 # Project goal
 
-This project use kafka to procced messages comming from a file into kafka topics. Those messages are JSON schema that we serialize to java object (or not) in order to store them or a part of them in a Cassandra DB with kafka consumers.
+This project use kafka to proceed messages coming from a file into kafka topics. Those messages are JSON schema that we serialize to java object (or not)
+ in order to store them or a part of them in a Cassandra DB with kafka consumers.
 
 
 ## Pre-requisites
 
-You need a linux based OS. This code have been developped on an Ubuntu OS.
+You need a linux based OS. This code have been developed on an Ubuntu OS.
 
 Download all this git repo and install kafka 0.10.2.0 at least
 
@@ -25,7 +26,7 @@ $ cd kafka_2.1.10-0.10.2.0
 $ bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
-Now start 3 Kafka borker in different console:
+Now start 3 Kafka broker in different console:
 
 ```
 $ bin/kafka-server-start.sh config/server1.properties
@@ -64,7 +65,7 @@ machine. The next steps are to launch the project
 
 There is several point to pay attention in the project code. First of all the Properties that we will set to Kafka and to our topics.
 All the prop are hard coded in the Producers/Consumers Classes but you also can use the properties files located in ressources folder.
-You must focus your intention in The bootstraping servers list, It must fit with your server.props when you launch the kafka brokers.
+You must focus your intention in The bootstrapping servers list, It must fit with your server.props when you launch the kafka brokers.
 Moreover Topics,ands groupId are important variable that you must set.
 
 
@@ -91,8 +92,8 @@ The interesting thing with setting up a cluster ( here 3 broker in a single node
 To check that you can stop a broker and running again MainProduceMore. You will see that you get all the information and get no loss. If you wake the broker up again everything will come back to normal all the data will be moved to the broker and you will find a perfect working cluster with no data loss.
 
 ##Tips
-to see beter what is happening in the broker you can open 3 new terminal and do the following:
-in the first one you whant the information about the topic (replication, synchronisation ..)
+to see better what is happening in the broker you can open 3 new terminal and do the following:
+in the first one you want the information about the topic (replication, synchronisation ..)
 ```
 bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic Ticket
 ```
@@ -107,7 +108,7 @@ and you will see if you got the message every where.
 bin/kafka-console-producer.sh  --broker-list localhost:9092,localhost:9093,localhost:9094 --topic Ticket
 ```
 
-# Links to get more informations
+# Links to get more information
 
 Kafka/zookeeper setup
 ```
