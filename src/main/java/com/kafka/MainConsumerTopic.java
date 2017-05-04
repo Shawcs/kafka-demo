@@ -11,16 +11,14 @@ import java.util.Properties;
 public class MainConsumerTopic {
 
     public static void main(String[] args) throws IOException {
-
-        //properties for the servers
-        //String brokers = "localhost:9092,localhost:9093,localhost:9094";
+     //properties for the servers
         Properties properties = new Properties();
         InputStream inputStream = MainProducerConsumerPartition.class.getClassLoader()
                 .getResourceAsStream("kafka_broker.properties");
         properties.load(inputStream);
         String brokers= String.valueOf(properties.get("BROKER"));
+        String zookeeper = String.valueOf(properties.get("ZOOKEEPER"));
 
-//TODO see in detail what is happening here
         //properties for the producer
         String groupId = "test";
         String topic = "Ticket";
@@ -28,7 +26,7 @@ public class MainConsumerTopic {
         //this launch an simple consumer alone
         // Start group of Notification Consumers
         ConsumerGroup consumerGroup =
-                new ConsumerGroup(brokers, groupId, topic);
+                new ConsumerGroup(brokers, groupId, topic,zookeeper);
 
         consumerGroup.execute();
 

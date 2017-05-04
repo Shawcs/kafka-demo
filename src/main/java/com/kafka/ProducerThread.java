@@ -4,10 +4,10 @@ package com.kafka;
 //schema registry http://docs.confluent.io/1.0/schema-registry/docs/serializer-formatter.html
 //partitionner http://howtoprogram.xyz/2016/06/04/write-apache-kafka-custom-partitioner/
 
-import com.serialiser.Ticket;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serialiser.Ticket;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -44,15 +44,15 @@ public class ProducerThread implements Runnable {
     private static Properties createProducerConfig(String brokers) {
         Properties props = new Properties();
         props.put("bootstrap.servers", brokers);
+        props.put("client.id","client_1");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
-        props.put("linger.ms", 1);
+        props.put("linger.ms", 10);
         props.put("buffer.memory", 33554432);
-        props.put("enable.auto.commit", "false");//offsets will not commit automatically from the config
+        props.put("request.timeout.ms",200);//see if work
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("producer.interceptor.classes", "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor");
         return props;
     }
 
@@ -66,11 +66,11 @@ public class ProducerThread implements Runnable {
         try {
             currentTicket = mapper.readValue(recordValue, Ticket.class);
         } catch (JsonGenerationException e) {
-            logger.debug("Json exception "+e);
+            logger.error("Json exception "+e);
         } catch (JsonMappingException e) {
-            logger.debug("Json map "+e);
+            logger.error("Json map "+e);
         } catch (IOException e) {
-          logger.debug("Io exception "+e);
+          logger.error("Io exception "+e);
         }
 
     String type = currentTicket.getType();
@@ -108,19 +108,18 @@ public class ProducerThread implements Runnable {
     //TODO put those two method in a separated class
 @Override
     public void run() {
-    Reader fileReader = null;
-        try {
-            // Read file in order to fake the  data flow
-            try {
-                fileReader = new InputStreamReader(new FileInputStream(DATA_SOURCE));
-            } catch (FileNotFoundException e) {
-                logger.debug("file "+e);
-            }
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
+    try {
+        System.out.println("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");// this is time consuming because it's evey heavy for the server
+    } catch (IOException e) {
+       logger.error(""+e);
+    }
+    Reader fileReader = null;// Read file in order to fake the  data flow
+    try {
+        fileReader = new InputStreamReader(new FileInputStream(DATA_SOURCE));
+         BufferedReader bufferedReader = new BufferedReader(fileReader);
             String strLine;
             int i = 0;
 
-            logger.info("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
         while ((strLine = bufferedReader.readLine()) != null) {
                 i = i + 1;
 
@@ -135,36 +134,43 @@ public class ProducerThread implements Runnable {
                     @Override
                     public void onCompletion(RecordMetadata metadata, Exception e) {
                         if (e != null) {
-                          logger.info("error on completion "+e);
+                          logger.error("error on completion "+e);
                         }
                         logger.info("\n Sent message: \n ##########" + finalStrLine1 + "\n to, Partition: " + metadata.partition() + ", Offset: "
                                         + metadata.offset() + ",key " + finalI + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
-
+                        System.out.println("\n Sent message: \n ##########" + finalStrLine1 + "\n to, Partition: " + metadata.partition() + ", Offset: "
+                                + metadata.offset() + ",key " + finalI + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
                          }
                 });
-                try {
+          /*      try {
                     Thread.sleep(1000); //to avoid flood in console
                 } catch (InterruptedException ie) {
                     logger.debug("exception  "+ie);
-                }
+                }*/
             }
-        } catch (Throwable throwable) {
-            logger.debug("throw except  "+throwable);
-        } finally {
-            producer.close();
-            if(fileReader!=null) {
+            } catch (IOException e) {
+                logger.error("file "+e);
+            }
+          finally {
                 try {
                     fileReader.close();//see if this not blocking
                 } catch (IOException e) {
-                    logger.debug("file reader closing"+e);
-                }
+                    logger.error(""+e);
             }
+        producer.close();
         }
     }
 
     //we call the function from consumerGroup that calculate the number of partition from a topic + broker list the group id is just here to keep trace from who is doing what in zookeeper
-    public int getNbrPartition(String topicName, String brokers) {
-        ConsumerGroup c = new ConsumerGroup(brokers, "nbrRequester", topicName);
+   public int getNbrPartition(String topicName, String brokers) throws IOException {
+       InputStream inputStream = MainProducerConsumerPartition.class.getClassLoader()
+               .getResourceAsStream("kafka_broker.properties");
+       Properties properties = new Properties();
+       properties.load(inputStream);
+
+       String zook= String.valueOf(properties.get("ZOOKEEPER"));
+
+        ConsumerGroup c = new ConsumerGroup(brokers, "nbrRequester", topicName,zook);
         return c.getNumberOfPartition();
     }
 

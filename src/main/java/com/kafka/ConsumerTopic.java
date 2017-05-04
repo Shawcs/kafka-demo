@@ -3,6 +3,8 @@ package com.kafka;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -13,8 +15,9 @@ import java.util.Properties;
 //we read a specific topic without looking the partitions id
 public class ConsumerTopic implements Runnable {
 
+    final Logger logger = LoggerFactory.getLogger(ConsumerTopic.class);
     private final KafkaConsumer<String, String> consumer;
-    private String topic;
+    private final String topic;
 
     public ConsumerTopic(String brokers, String groupId, String topic) {
         Properties prop = createConsumerConfig(brokers, groupId);
@@ -41,7 +44,7 @@ public class ConsumerTopic implements Runnable {
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
-                System.out.println("Receive message: " + record.value() + ", Partition: "
+                logger.info("Receive message: " + record.value() + ", Partition: "
                         + record.partition() + ", Offset: " + record.offset() + ", by ThreadID: "
                         + Thread.currentThread().getId());
             }

@@ -16,6 +16,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -47,6 +48,10 @@ import java.util.regex.Pattern;
  * 6) Once you're done with your experiments, you can stop this example via {@code Ctrl-C}. If needed,
  * also stop the Kafka broker ({@code Ctrl-C}), and only then stop the ZooKeeper instance (`{@code Ctrl-C}).
  */
+
+/**
+ * We count the number of time we got error written in the topic Ticket every 1 s
+    **/
 public class WordCountLambdaExample {
 
     public  static final String TOPIC_NAME="Ticket";
@@ -62,7 +67,7 @@ public class WordCountLambdaExample {
         final Properties streamsConfiguration = new Properties();
         // Give the Streams application a unique name.  The name must be unique in the Kafka cluster
         // against which the application is run.
-        streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "WordCount");
+        streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "ErrorCount");
         // Where to find Kafka broker(s).
         streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         // Specify default (de)serializers for record keys and for record values.
@@ -70,31 +75,25 @@ public class WordCountLambdaExample {
         streamsConfiguration.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         // Records should be flushed every 10 seconds. This is less than the default
         // in order to keep this example interactive.
-        streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
-        // For illustrative purposes we disable record caches
-        streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+        streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 100);
 
         // Set up serializers and deserializers, which we will use for overriding the default serdes
         // specified above.
         final Serde<String> stringSerde = Serdes.String();
         final Serde<Long> longSerde = Serdes.Long();
-
         // In the subsequent lines we define the processing topology of the Streams application.
         final KStreamBuilder builder = new KStreamBuilder();
-
-
-        final KStream<String, String> textLines = builder.stream(stringSerde, stringSerde,"Result");//output topic
-
+        final KStream<String, String> textLines = builder.stream(stringSerde, stringSerde,TOPIC_NAME);//output topic
         final Pattern pattern = Pattern.compile("\\W+", Pattern.UNICODE_CHARACTER_CLASS);
-
         final KTable<String, Long> wordCounts = textLines
 
                 .flatMapValues(value -> Arrays.asList(pattern.split(value.toLowerCase())))
+                .filter(((key, value) -> value.equals("error")))
+                .mapValues(value -> "error")
                 .groupBy((key, word) -> word)
                 .count("Counts");
 
-        wordCounts.to(stringSerde, longSerde, TOPIC_NAME);
-
+        wordCounts.to(stringSerde, longSerde, "WordResult");
         // Now that we have finished the definition of the processing topology we can actually run
         // it via `start()`.  The Streams application as a whole can be launched just like any
         // normal Java application that has a `main()` method.

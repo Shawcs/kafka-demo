@@ -27,15 +27,15 @@ public class ProducerThreadFakeData implements Runnable {
     public static final String ANSI_RESET = "\u001B[0m";//just to put some colors in the prompt and because i have time to do it !
     public static final String ANSI_GREEN = "\u001B[32m";
 
+
     final Logger logger = LoggerFactory.getLogger(ProducerThreadFakeData.class);
     private final KafkaProducer<String, String> producer;
     private final String topic;
     private final String BROKERS;
 
     public ProducerThreadFakeData(String brokers, String topic) {
-
-        Properties prop = createProducerConfig(brokers);
-        this.producer = new KafkaProducer<>(prop);
+ Properties prop = createProducerConfig(brokers);
+        this.producer = new KafkaProducer<>(prop); //when we do that we have the settings prompts
         this.topic = topic;
         this.BROKERS = brokers;
     }
@@ -43,43 +43,41 @@ public class ProducerThreadFakeData implements Runnable {
     private static Properties createProducerConfig(String brokers) {
         Properties props = new Properties();
         props.put("bootstrap.servers", brokers);
-        props.put("acks", "all"); //guarantees that not only did the partition leader accept the write, but it was successfully replicated to all of the in-sync replicas
+        props.put("acks", "1"); //This will mean the leader will write the record to its local log but will respond without awaiting full acknowledgement from all followers.
+        // In this case should the leader fail immediately after acknowledging the record but before the followers have replicated it then the record will be lost.
         props.put("retries", 0);//value larger than 0 (which is the default), then message reordering may occur since the retry may occur after a following write succeeded
         props.put("batch.size", 16384);
         props.put("linger.ms", 1);
         props.put("buffer.memory", 33554432);
-        props.put("enable.auto.commit", "false");//offsets will not commit automatically from the config
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("producer.interceptor.classes", "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor");
         return props;
     }
 
 @Override
     public void run() {
         int i = 0;
-        while(true){
-            logger.info("we have " + getNbrPartition(topic, BROKERS) + " partition in the topic " + topic + " where we are writing on");
+       while(true){
                 String record =  fakeRecord(); //we create a fake record
-
-                producer.send(new ProducerRecord<>(topic,record ), new Callback() {
+                producer.send(new ProducerRecord<>(topic,record), new Callback() {
                     @Override
                     public void onCompletion(RecordMetadata metadata, Exception e) {
                         if (e != null) {
-                          logger.info("error on completion "+e);
+                            logger.error("error on completion "+e);
                         }
                         logger.info("\n Sent message: \n ##########" + record + "\n to, Partition: " + metadata.partition() + ", Offset: "
-                                        + metadata.offset() + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() + "\n ######");
+                                + metadata.offset() + " to topic '" + metadata.topic() + "' by thread " + currentThread().getId() +
+                                "\n ######"+"IN "+metadata.timestamp()+"? time for acknowledgment by the server");
                     }
                 });
                 i++;
-                try {
+          /*      try {
                     Thread.sleep(1000); //to avoid flood in console
                 } catch (InterruptedException ie) {
                     logger.debug("exception  "+ie);
-                }
-                if(i>=100000||record == null){ //we block the loop if we go over i nbr of data send it's just in case you forget to stop the thread in order to not over flow the memory
-                    logger.debug("exception record null");
+                }*/
+                if(i>=100||record == null){ //we block the loop if we go over i nbr of data send it's just in case you forget to stop the thread in order to not over flow the memory
+                    logger.error("exception record null");
                     break;
                 }
             }
@@ -100,14 +98,9 @@ public class ProducerThreadFakeData implements Runnable {
             String record =ANSI_GREEN+"Name: " +ANSI_RESET+ name +ANSI_GREEN+ "/ Birth: " +ANSI_RESET+ birthDate +ANSI_GREEN+ "/ Email: " +ANSI_RESET+ emailAddress +
                     ANSI_GREEN+ " / Phone " +ANSI_RESET+ phoneNumber +ANSI_GREEN+ " / Street: "+ANSI_RESET+ streetAddress+ANSI_GREEN+" / Credit Card: "+ ANSI_RESET+creditCard ;
 
-            System.out.println(record);
+            logger.info(record);
             return record;
         }
 
-    //we call the function from consumerGroup that calculate the number of partition from a topic + broker list the group id is just here to keep trace from who is doing what in zookeeper
-    public int getNbrPartition(String topicName, String brokers) {
-        ConsumerGroup c = new ConsumerGroup(brokers, "nbrRequester", topicName);
-        return c.getNumberOfPartition();
-    }
 
 }

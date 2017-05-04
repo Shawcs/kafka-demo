@@ -14,7 +14,6 @@ public class MainProducerFakeRecords {
     public static void main(String[] args) throws IOException {
 
         //properties for the servers
-     //   String brokers = "localhost:9092,localhost:9093,localhost:9094";
         Properties properties = new Properties();
         InputStream inputStream = MainProducerConsumerPartition.class.getClassLoader()
                 .getResourceAsStream("kafka_broker.properties");

@@ -8,6 +8,8 @@ import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
 import org.apache.kafka.common.errors.TopicExistsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
@@ -18,14 +20,17 @@ import java.util.Properties;
  */
 public class TopicCreation implements Runnable {
 
+    final Logger logger = LoggerFactory.getLogger(TopicCreation.class);
     private final String topicName;
     private final int nbrOfPartition;
     private final int nbrOfReplication;
+    private final String zookeeperHost;
 
-    public TopicCreation(String TopicName, int NbrOfPartition, int NbrOfReplication) {
+    public TopicCreation(String TopicName, int NbrOfPartition, int NbrOfReplication,String zookeeper) {
         this.topicName = TopicName;
         this.nbrOfPartition = NbrOfPartition;
         this.nbrOfReplication = NbrOfReplication;
+        this.zookeeperHost=zookeeper;
     }
 
     public int getNbrOfReplication() {
@@ -40,7 +45,6 @@ public class TopicCreation implements Runnable {
         ZkClient zkClient = null;
         ZkUtils zkUtils = null;
         try {
-            String zookeeperHost = "localhost:2181";
 
             zkClient = new ZkClient(zookeeperHost, 15000, 10000, ZKStringSerializer$.MODULE$);
             zkUtils = new ZkUtils(zkClient, new ZkConnection(zookeeperHost), false);
@@ -50,14 +54,11 @@ public class TopicCreation implements Runnable {
             AdminUtils.createTopic(zkUtils, topicName, nbrOfPartition, nbrOfReplication, topicConfiguration, RackAwareMode.Disabled$.MODULE$);
 
             //just to print a bit of setting in the console
-            System.out.println("we created the new TOPIC :" + topicName + ", it has " +
+            logger.info("we created the new TOPIC :" + topicName + ", it has " +
                     nbrOfPartition + " partitions, and " + nbrOfReplication + " replication");
 
         } catch (TopicExistsException ex) {
-            System.out.println("the topic " + topicName + " already exist");
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+           logger.error("the topic " + topicName + " already exist");
         } finally {
             if (zkClient != null) {
                 zkClient.close();

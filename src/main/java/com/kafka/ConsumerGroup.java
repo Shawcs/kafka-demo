@@ -20,14 +20,15 @@ public class ConsumerGroup {
     private final String topic;
     private final String brokers;
     private List<ConsumerTopic> consumers;
-    private static  final String ZookeeperId="localhost:2181";
+    private final String ZookeeperId;
 
     final Logger logger = LoggerFactory.getLogger(ConsumerGroup.class);
 
-    public ConsumerGroup(String brokers, String groupId, String topic) {
+    public ConsumerGroup(String brokers, String groupId, String topic,String zookeeper) {
         this.brokers = brokers;
         this.topic = topic;
         this.groupId = groupId;
+        this.ZookeeperId=zookeeper;
         this.numberOfConsumers = getNumberOfPartition() - 1; //we put -1 because we want less consumer than the number of partition
         consumers = new ArrayList<>();
 
@@ -48,7 +49,6 @@ public class ConsumerGroup {
     /**
      * @return the numberOfPartition
      */
-
     public int getNumberOfPartition() {
 
         try {
@@ -57,10 +57,10 @@ public class ConsumerGroup {
             try {
                 return  zk.getChildren(zkNodeName, false).size();
             } catch (KeeperException|InterruptedException e ) {
-                logger.debug("trouble with zookeeper "+e);
+                logger.error("trouble with zookeeper "+e);
             }
         }catch (IOException e) {
-            logger.debug("In/out exception "+e);
+            logger.error("In/out exception "+e);
         }
         return 0;
     }
@@ -72,9 +72,9 @@ public class ConsumerGroup {
             String zkNodeName = "/brokers/ids";
            return zk.getChildren(zkNodeName, false);
         } catch (IOException|InterruptedException e) {
-            logger.debug("In/out exception "+e);
+            logger.error("In/out exception "+e);
         } catch (KeeperException e) {
-            logger.debug("Zookeeper error "+e);
+            logger.error("Zookeeper error "+e);
         }
         return Collections.emptyList();
     }
@@ -87,10 +87,10 @@ public class ConsumerGroup {
             String zkNodeName = "/brokers/topics";
             return  zk.getChildren(zkNodeName, false);
         } catch (IOException|InterruptedException e) {
-            logger.debug("exception "+e);
+            logger.error("exception "+e);
         }
         catch (KeeperException ez) {
-            logger.debug("Zookeeper error "+ez);
+            logger.error("Zookeeper error "+ez);
         }
 
         return Collections.emptyList();

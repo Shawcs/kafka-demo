@@ -4,6 +4,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.log4j.Level;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +16,13 @@ import java.util.Properties;
  */
 public class ConsumerThread implements Runnable {
 
+    final org.slf4j.Logger logger = LoggerFactory.getLogger(ConsumerThread.class);
     private final KafkaConsumer<String, String> consumer;
     private final int partNbr;
     private String topic;
 
     public ConsumerThread(String brokers, String groupId, String topic, int partitionNumber) {
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.OFF);//set the lvl at debug
         Properties prop = createConsumerConfig(brokers, groupId);
         this.consumer = new KafkaConsumer<>(prop);
         this.topic = topic;
@@ -35,33 +39,24 @@ public class ConsumerThread implements Runnable {
         props.put("auto.offset.reset", "earliest");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("consumer.interceptor.classes", "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor");
         return props;
     }
 
     @Override
     public void run() {
-        while (true) {
 
             //to read a specific partition of the topic
             List<TopicPartition> partitions = new ArrayList<>();
             partitions.add(new TopicPartition(topic, partNbr));
 
             consumer.assign(partitions);
-            // consumer.assign(Arrays.asList(partDesc));
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 System.out.println("\n Read message:  \n #########" + record.value() + "\n From , Partition: "
                         + record.partition() + ", Offset: " + record.offset() + ", with key " + record.key() + ", by ThreadID: " +
                         +Thread.currentThread().getId() + "\n ########");
-            /*    try {
-                    Thread.sleep(1000); //just not to flood the console
-                } catch (InterruptedException ie) {
-                }*/
-
             }
         }
-    }
 
 
 }
