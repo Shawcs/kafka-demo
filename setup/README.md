@@ -18,7 +18,7 @@ is of course for test purpose because every single running instance should be in
 rack.
 
  # Configuration of zookeeper 
-help: 	
+ Help: 	
 - https://myjeeva.com/zookeeper-cluster-setup.html 
 - https://zookeeper.apache.org/doc/r3.1.2/zookeeperAdmin.html#sc_zkMulitServerSetup
 
@@ -459,12 +459,9 @@ zookeeper.connect=10.23.75.126:2181,10.23.75.126:2182,10.23.75.126:2183
 zookeeper.connection.timeout.ms=6000" > server3.properties
 ```
 
-end of configuration for kafka brokers
-
-
 # Tuning of the JVM
-the JVM can run out of memory if you have some zookeeper/kafka instances running 
-this depend on the work load of the servers. it's recommended to run some test on the machine 
+The JVM can run out of memory if you have some zookeeper/kafka instances running 
+this depend on the work load of the servers. It's recommended to run some test on the machine 
 to define your needs  (help  http://blog.ippon.fr/2013/11/15/cas-pratique-de-tuning-jvm-dune-application/)
 go to kafka/bin and edit the file zookeeper_server_start.sh
 modify the export KAFKA_HEAP_OPTS part
@@ -481,12 +478,12 @@ vi kafka/bin/zookeeper-server-start.sh
 
  export KAFKA_HEAP_OPTS="-Xms2g -Xmx2g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
 ```
-same for the file kafka-server-start.sh
+Same for the file kafka-server-start.sh
 ```
 vi kafka/bin/kafka-server-start.sh
 export KAFKA_HEAP_OPTS="-Xms1g -Xmx1g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
  ```
-the modification of the file descriptor is also recommended because kafka need a large number of socket and read operation. 
+The modification of the file descriptor is also recommended because kafka need a large number of socket and read operation. 
 More detail in the confluent documentation here http://docs.confluent.io/2.0.1/kafka/deployment.html#file-descriptors-and-mmap
 to do this with an ubuntu distribution : https://underyx.me/2015/05/18/raising-the-maximum-number-of-file-descriptors
 walk-through the doc 
@@ -494,11 +491,11 @@ walk-through the doc
 ```
 ulimit -n #give the size of the file descriptor
 ```
-to update it
+To update it
 ```
 vi /etc/security/limits.conf
 ```
-add
+Add
 ```
 *softnofile 10000 #the value is up to you, if we follow confluent documentation they say 100 000 is a good number for a big cluster
 *hard nofile 10000
@@ -506,94 +503,92 @@ add
 {user} soft nofile 10000
 {user} hard nofile 10000
 ```
-update 
+Update 
 ```
 vi /etc/pam.d/common-session
 ```
-add
+Add
 ```
 session required pam_limits.so
 ```
-last one
+Last one
 ```
 vi /etc/pam.d/common-session-noninteractive 
 ```
-add
+Add
 ```
 session required pam_limits.so
 ```
-reboot
+Reboot
 ```
 sudo reboot
 ```
-do again 
+Do again 
 ```
 ulimit -n
 #here you can see the value you have just set before so that worked ! if not do it again
 ```
 
-End tuning of the JVM
-
 # Launching servers + kafka tools
 
-go to your kafka directory
+Go to your kafka directory
 ```
 cd /home/kafka/kafka_2.10-0.10.2.0
 ```
-launch zookeeper servers
+Launch zookeeper servers
 ```
 bin/zookeeper-server-start.sh config/zookeeper1.properties
 bin/zookeeper-server-start.sh config/zookeeper2.properties
 bin/zookeeper-server-start.sh config/zookeeper3.properties
 ```
-see process 
+See process 
 ```
 jps
 ```
 
-launch kafka servers
+Launch kafka servers
 ```
 bin/kafka-server-start.sh config/server1.properties
 bin/kafka-server-start.sh config/server2.properties
 bin/kafka-server-start.sh config/server3.properties
 ```
-list all topic 
+List all topic 
 ```
 bin/kafka-topics.sh --zookeeper 10.23.75.126:2181 --list
 ```
-describe a topic
+Describe a topic
 ```
 bin/kafka-topics.sh --zookeeper 10.23.75.126:2181 --describe --topic Ticket
 ```
-alternative way from the logs
+Alternative way from the logs
 ```
 tree /tmp/kafka-logs-{1,2,3}
 ```
-create a topics
+Create a topics
 ```
 bin/kafka-topics.sh --zookeeper 10.23.75.126:2181 --create --topic test --partitions 3 --replication-factor 2
 
 bin/kafka-topics.sh --zookeeper 10.23.75.126:2181 --create --topic summary-markers --partitions 3 --replication-factor 2
 ```
-write to a topic
+Write to a topic
 ```
  bin/kafka-console-producer.sh --broker-list 10.23.75.126:9092,10.23.75.126:9093,10.23.75.126:9094 --topic Ticket
  ```
  
-read from a topic
+Read from a topic
 ```
 bin/kafka-console-consumer.sh --bootstrap-server 10.23.75.126:9092,10.23.75.126:9093,10.23.75.126:9094 --topic Ticket  --from-beginning
 bin/kafka-console-consumer.sh --bootstrap-server 10.23.75.126:9092,10.23.75.126:9093,10.23.75.126:9094 --topic Fake_Data  --from-beginning
 ```
-inspect a consumer group
+Inspect a consumer group
 ```
 bin/kafka-consumer-groups.sh -new-consumer -describe -group test -bootstrap-server 10.23.75.126:9092,10.23.75.126:9093,10.23.75.126:9094,10.23.75.179:9095
 ```
-delete topic you could have to wait before the deletion is effective
+Delete topic you could have to wait before the deletion is effective
 ```
 bin/kafka-topics.sh --zookeeper 10.23.75.126:2181 --delete --topic Ticket
 ```
-to read the result of the kafka stream error count 
+To read the result of the kafka stream error count 
 ```
 bin/kafka-console-consumer.sh --topic WordResult --from-beginning \
                              --new-consumer --bootstrap-server 10.23.75.126:9092,10.23.75.126:9093,10.23.75.126:9094 \
