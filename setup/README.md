@@ -1,10 +1,23 @@
- # prerequist 
+ # Prerequisite 
 - ubuntu or other unix server in 64 bit 
 - Java sdk 1.8 64 bit or more  http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 - kafka  https://kafka.apache.org/downloads
 
+# Note about the following configuration
 
- # configuration of zooekeeper 
+We will deploy Zookeeper and Kafka server. Our goal is to be fault tolerant, be highly scalable
+and reliable. For the we have to launch several kafka servers to create data replication to be
+fault tolerant on kafka server error and we have several Zookeeper server too, inorder to be
+fault tolerant on zookeeper server. Keep in mind that if Zookeeper go completely down kafka will
+fall with him. The fault tolerance is not the same in Zookeeper and Kafka. To be fault tolerant in
+Zookeeper you need at least 3 server (a MASTER and two WORKER). With this minimum configuration you are allowed to lose 
+at most one Zookeeper server (MASTER remain one WORKER). The recommended configuration is
+five Zookeeper server to be safe (see performance and reliability section https://zookeeper.apache.org/doc/trunk/zookeeperOver.html).
+In the following config you will see that all the server are in the same place (10.23.75.126) this
+is of course for test purpose because every single running instance should be in a different server
+rack.
+
+ # Configuration of zookeeper 
 help: 	
 - https://myjeeva.com/zookeeper-cluster-setup.html 
 - https://zookeeper.apache.org/doc/r3.1.2/zookeeperAdmin.html#sc_zkMulitServerSetup
@@ -23,7 +36,7 @@ cd /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk4 && echo "4" > myid &&
 cd /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk5 && echo "5" > myid 
 ```
 
-# creation of configuration file for zookeeper
+# Creation of configuration file for zookeeper
 ### File 1
 ```
 echo "
@@ -221,7 +234,7 @@ zookeeper.connect=10.23.75.126:2181,10.23.75.126:2182,10.23.75.126:2183
 zookeeper.connection.timeout.ms=6000
 " > server1.properties
 ```
-### file 2
+### File 2
 ```
 echo "
 # see kafka.server.KafkaConfig for additional details and defaults
@@ -332,7 +345,7 @@ zookeeper.connect=10.23.75.126:2181,10.23.75.126:2182,10.23.75.126:2183
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000 " > server2.properties
 ```
-### file 3
+### File 3
 ```
 echo "
 # see kafka.server.KafkaConfig for additional details and defaults
@@ -449,7 +462,7 @@ zookeeper.connection.timeout.ms=6000" > server3.properties
 end of configuration for kafka brokers
 
 
-# tuning of the JVM
+# Tuning of the JVM
 the JVM can run out of memory if you have some zookeeper/kafka instances running 
 this depend on the work load of the servers. it's recommended to run some test on the machine 
 to define your needs  (help  http://blog.ippon.fr/2013/11/15/cas-pratique-de-tuning-jvm-dune-application/)
@@ -519,9 +532,9 @@ ulimit -n
 #here you can see the value you have just set before so that worked ! if not do it again
 ```
 
-end tunnung of the JVM
+End tuning of the JVM
 
-# launching servers + kafka tools
+# Launching servers + kafka tools
 
 go to your kafka directory
 ```
