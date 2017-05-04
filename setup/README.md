@@ -115,10 +115,7 @@ server.3=10.23.75.126:2890:3890
 # disable the per-ip limit on the number of connections since this is a non-production config
 #maxClientCnxns=0 " > zookeeper3.properties
 ```
-
-End of the creation of conf file for zookeeper 
-
-# configuration file for kafka brokers
+# Configuration file for kafka brokers
 ### File 1
 ```
 cd /home/kafka/kafka_2.10-0.10.2.0/config
