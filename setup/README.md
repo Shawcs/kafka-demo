@@ -532,7 +532,9 @@ Go to your kafka directory
 ```
 cd /home/kafka/kafka_2.10-0.10.2.0
 ```
-Launch zookeeper servers
+Launch zookeeper servers. Warning you will see when you launch the first server that it can't connect 
+and keep trying, this is because we need to launch at least 2 server so when you launch the second server
+you will see that the first one succeed.
 ```
 bin/zookeeper-server-start.sh config/zookeeper1.properties
 bin/zookeeper-server-start.sh config/zookeeper2.properties
