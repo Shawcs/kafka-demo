@@ -7,6 +7,9 @@ This project use kafka to proceed messages coming from a file into kafka topics.
 
 ## Pre-requisites
 
+For more information go here https://github.com/Shawcs/kafka-demo/tree/master/setup 
+(you really should read this before)
+
 You need a linux based OS. This code have been developed on an Ubuntu OS.
 
 Download all this git repo and install kafka 0.10.2.0 at least
