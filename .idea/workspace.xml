@@ -2,35 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="728a2e31-9dc9-46f2-b21c-830565bfb6cf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/setup/README.md" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/streams/RecordsCountExample.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/ConsumerGroup.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/ConsumerGroup.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/ConsumerThread.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/ConsumerThread.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/ConsumerTopic.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/ConsumerTopic.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/MainConsumerTopic.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/MainConsumerTopic.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/MainProduceMore.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/MainProduceMore.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/MainProducerConsumerPartition.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/MainProducerConsumerPartition.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/MainProducerFakeRecords.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/MainProducerFakeRecords.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThread$1.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThread$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThread.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThread.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThreadFakeData$1.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThreadFakeData$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThreadFakeData.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/ProducerThreadFakeData.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/kafka/TopicCreation.class" afterPath="$PROJECT_DIR$/target/classes/com/kafka/TopicCreation.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/streams/RecordsCountExample.class" afterPath="$PROJECT_DIR$/target/classes/com/streams/RecordsCountExample.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/streams/WordCountLambdaExample.class" afterPath="$PROJECT_DIR$/target/classes/com/streams/WordCountLambdaExample.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/ConsumerGroup.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/ConsumerGroup.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/ConsumerThread.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/ConsumerThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/ConsumerTopic.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/ConsumerTopic.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/MainConsumerTopic.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/MainConsumerTopic.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/MainProducerConsumerPartition.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/MainProducerConsumerPartition.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/MainProducerFakeRecords.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/MainProducerFakeRecords.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/ProducerThread.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/ProducerThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/ProducerThreadFakeData.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/ProducerThreadFakeData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/kafka/TopicCreation.java" afterPath="$PROJECT_DIR$/src/main/java/com/kafka/TopicCreation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/streams/WordCountLambdaExample.java" afterPath="$PROJECT_DIR$/src/main/java/com/streams/WordCountLambdaExample.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/kafka_broker.properties" afterPath="$PROJECT_DIR$/src/main/resources/kafka_broker.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/kafka_broker.properties" afterPath="$PROJECT_DIR$/target/classes/kafka_broker.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup/README.md" afterPath="$PROJECT_DIR$/setup/README.md" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -52,8 +25,8 @@
         <entry file="file://$PROJECT_DIR$/setup/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="416">
-                <caret line="472" column="0" lean-forward="true" selection-start-line="472" selection-start-column="0" selection-end-line="472" selection-end-column="0" />
+              <first_editor relative-caret-position="204">
+                <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -291,6 +264,80 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="KAFKA_demo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kafka-examples" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="KAFKA_demo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kafka-examples" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="KAFKA_demo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="streams" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kafka-examples" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="KAFKA_demo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -811,7 +858,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1971831" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29252437" sideWeight="0.49585405" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2611051" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2611051" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20522387" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1113,13 +1160,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/streams/WordCountLambdaExample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="78" column="0" lean-forward="true" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -1137,6 +1177,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/streams/WordCountLambdaExample.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/setup/README.md">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -1146,8 +1194,8 @@
       </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="416">
-            <caret line="472" column="0" lean-forward="true" selection-start-line="472" selection-start-column="0" selection-end-line="472" selection-end-column="0" />
+          <first_editor relative-caret-position="204">
+            <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
             <folding />
           </first_editor>
           <second_editor />

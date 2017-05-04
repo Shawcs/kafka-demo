@@ -1,10 +1,10 @@
-#prerequist 
+ #prerequist 
 - ubuntu or other unix server in 64 bit 
 - Java sdk 1.8 64 bit or more  http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 - kafka  https://kafka.apache.org/downloads
 
 
-#configuration of zooekeeper 
+ #configuration of zooekeeper 
 help: 	
 - https://myjeeva.com/zookeeper-cluster-setup.html 
 - https://zookeeper.apache.org/doc/r3.1.2/zookeeperAdmin.html#sc_zkMulitServerSetup
