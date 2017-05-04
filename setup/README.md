@@ -9,12 +9,12 @@ help:
 - https://myjeeva.com/zookeeper-cluster-setup.html 
 - https://zookeeper.apache.org/doc/r3.1.2/zookeeperAdmin.html#sc_zkMulitServerSetup
 
-create the directory
+Create the directory
 ```
 mkdir -p /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk1 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk2 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk3 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk4 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk5
 mkdir -p /home/kafka/kafka_2.10-0.10.2.0/zookeeper/log/zk1 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/log/zk2 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/log/zk3 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/log/zk4 /home/kafka/kafka_2.10-0.10.2.0/zookeeper/log/zk5
 ```
-create the id file
+Create the id file
 ```
 cd /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk1 && echo "1" > myid && 
 cd /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk2 && echo "2" > myid &&
@@ -24,6 +24,7 @@ cd /home/kafka/kafka_2.10-0.10.2.0/zookeeper/data/zk5 && echo "5" > myid
 ```
 
 # creation of configuration file for zookeeper
+### File 1
 ```
 echo "
 # the directory where the snapshot is stored.
@@ -49,6 +50,7 @@ server.3=10.23.75.126:2890:3890
 # disable the per-ip limit on the number of connections since this is a non-production config
 #maxClientCnxns=0 " > zookeeper1.properties
 ```
+### File 2
 ```
 echo "
 # the directory where the snapshot is stored.
@@ -74,6 +76,7 @@ server.3=10.23.75.126:2890:3890
 # disable the per-ip limit on the number of connections since this is a non-production config
 #maxClientCnxns=0 " > zookeeper2.properties
 ```
+### File 3
 ```
 echo "
 # the directory where the snapshot is stored.
@@ -99,9 +102,11 @@ server.3=10.23.75.126:2890:3890
 # disable the per-ip limit on the number of connections since this is a non-production config
 #maxClientCnxns=0 " > zookeeper3.properties
 ```
-end of the creation of conf file for zookeeper 
 
-#configuration file for kafka brokers
+End of the creation of conf file for zookeeper 
+
+# configuration file for kafka brokers
+### File 1
 ```
 cd /home/kafka/kafka_2.10-0.10.2.0/config
 echo "
@@ -216,6 +221,7 @@ zookeeper.connect=10.23.75.126:2181,10.23.75.126:2182,10.23.75.126:2183
 zookeeper.connection.timeout.ms=6000
 " > server1.properties
 ```
+### file 2
 ```
 echo "
 # see kafka.server.KafkaConfig for additional details and defaults
@@ -326,6 +332,7 @@ zookeeper.connect=10.23.75.126:2181,10.23.75.126:2182,10.23.75.126:2183
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000 " > server2.properties
 ```
+### file 3
 ```
 echo "
 # see kafka.server.KafkaConfig for additional details and defaults
@@ -442,7 +449,7 @@ zookeeper.connection.timeout.ms=6000" > server3.properties
 end of configuration for kafka brokers
 
 
-#tuning of the JVM
+# tuning of the JVM
 the JVM can run out of memory if you have some zookeeper/kafka instances running 
 this depend on the work load of the servers. it's recommended to run some test on the machine 
 to define your needs  (help  http://blog.ippon.fr/2013/11/15/cas-pratique-de-tuning-jvm-dune-application/)
@@ -514,7 +521,7 @@ ulimit -n
 
 end tunnung of the JVM
 
-#launching servers + kafka tools
+# launching servers + kafka tools
 
 go to your kafka directory
 ```
