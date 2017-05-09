@@ -54,11 +54,11 @@ public class TopicCreation implements Runnable {
             AdminUtils.createTopic(zkUtils, topicName, nbrOfPartition, nbrOfReplication, topicConfiguration, RackAwareMode.Disabled$.MODULE$);
 
             //just to print a bit of setting in the console
-            logger.info("we created the new TOPIC :" + topicName + ", it has " +
-                    nbrOfPartition + " partitions, and " + nbrOfReplication + " replication");
+            logger.info("######## \n we created the new TOPIC :" + topicName + ", it has " +
+                    nbrOfPartition + " partitions, and " + nbrOfReplication + " replication \n #######");
 
         } catch (TopicExistsException ex) {
-           logger.error("the topic " + topicName + " already exist");
+           logger.error("####### \n the topic " + topicName + " already exist  \n #######");
         } finally {
             if (zkClient != null) {
                 zkClient.close();

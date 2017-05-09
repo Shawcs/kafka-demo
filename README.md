@@ -149,3 +149,6 @@ We could monitor our thread because for the moment the code is not 100% thread s
 
 Do some benchmark on the code and then some optimisation
 
+The other thing to do is to take ca re of the logs files. Due to the Nohup command and to kafka in general we create a lot of log in logs directory
+we should pay more attention to kafka and zookeeper log size setting to decrease the logs size on disc. This to avoid memory issues to fast.
+If we keep using Nohup and we are concern about the files size, logrotate seems to be a good tool to work with.

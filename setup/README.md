@@ -169,7 +169,7 @@ port=9092
 ############################# Log Basics #############################
 
 # A comma seperated list of directories under which to store log files
-log.dirs=/tmp/kafka-logs-1
+log.dirs=/home/kafka/kafka_2.10-0.10.2.0/kafka/log/kafka-logs-1
 
 # The default number of log partitions per topic. More partitions allow greater
 # parallelism for consumption, but this will also result in more files across
@@ -192,7 +192,7 @@ num.recovery.threads.per.data.dir=1
 # every N messages (or both). This can be done globally and overridden on a per-topic basis.
 
 # The number of messages to accept before forcing a flush of data to disk
-#log.flush.interval.messages=10000
+log.flush.interval.messages=10000
 
 # The maximum amount of time a message can sit in a log before we force a flush
 #log.flush.interval.ms=1000
@@ -281,7 +281,7 @@ port=9093
 ############################# Log Basics #############################
 
 # A comma seperated list of directories under which to store log files
-log.dirs=/tmp/kafka-logs-2
+log.dirs=/home/kafka/kafka_2.10-0.10.2.0/kafka/log/kafka-logs-2
 
 # The default number of log partitions per topic. More partitions allow greater
 # parallelism for consumption, but this will also result in more files across
@@ -304,7 +304,7 @@ num.recovery.threads.per.data.dir=1
 # every N messages (or both). This can be done globally and overridden on a per-topic basis.
 
 # The number of messages to accept before forcing a flush of data to disk
-#log.flush.interval.messages=10000
+log.flush.interval.messages=10000
 
 # The maximum amount of time a message can sit in a log before we force a flush
 #log.flush.interval.ms=1000
@@ -394,7 +394,7 @@ port=9094
 
 # A comma seperated list of directories under which to store log files
 
-log.dirs=/tmp/kafka-logs-3
+log.dirs=/home/kafka/kafka_2.10-0.10.2.0/kafka/log/kafka-logs-3
 
 # The default number of log partitions per topic. More partitions allow greater
 # parallelism for consumption, but this will also result in more files across
@@ -417,7 +417,7 @@ num.recovery.threads.per.data.dir=1
 # every N messages (or both). This can be done globally and overridden on a per-topic basis.
 
 # The number of messages to accept before forcing a flush of data to disk
-#log.flush.interval.messages=10000
+log.flush.interval.messages=10000
 
 # The maximum amount of time a message can sit in a log before we force a flush
 #log.flush.interval.ms=1000
@@ -564,7 +564,7 @@ bin/kafka-topics.sh --zookeeper 10.23.75.126:2181 --describe --topic Ticket
 ```
 Alternative way from the logs
 ```
-tree /tmp/kafka-logs-{1,2,3}
+tree /home/kafka/kafka_2.10-0.10.2.0/kafka/log/kafka-logs-{1,2,3}
 ```
 Create a topics
 ```
