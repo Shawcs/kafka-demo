@@ -540,6 +540,8 @@ nohup bin/zookeeper-server-start.sh config/zookeeper1.properties > logs/zoo1_log
 nohup bin/zookeeper-server-start.sh config/zookeeper2.properties > logs/zoo2_log.txt 2>&1 &
 nohup bin/zookeeper-server-start.sh config/zookeeper3.properties > logs/zoo3_log.txt 2>&1 &
 ```
+I have some concern about log files created by the method. Since we redirected the standard and error output to the file 
+zoo* the file is increasing very quickly. Find a method to flush this log or do not use it at all.
 See process (two way since we use nohup function)
 ```
 jps
