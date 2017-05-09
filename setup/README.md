@@ -536,20 +536,21 @@ Launch zookeeper servers. Warning you will see when you launch the first server 
 and keep trying, this is because we need to launch at least 2 server so when you launch the second server
 you will see that the first one succeed.
 ```
-bin/zookeeper-server-start.sh config/zookeeper1.properties
-bin/zookeeper-server-start.sh config/zookeeper2.properties
-bin/zookeeper-server-start.sh config/zookeeper3.properties
+nohup bin/zookeeper-server-start.sh config/zookeeper1.properties > logs/zoo1_log.txt 2>&1 &
+nohup bin/zookeeper-server-start.sh config/zookeeper2.properties > logs/zoo2_log.txt 2>&1 &
+nohup bin/zookeeper-server-start.sh config/zookeeper3.properties > logs/zoo3_log.txt 2>&1 &
 ```
-See process 
+See process (two way since we use nohup function)
 ```
 jps
+jobs
 ```
 
 Launch kafka servers
 ```
-bin/kafka-server-start.sh config/server1.properties
-bin/kafka-server-start.sh config/server2.properties
-bin/kafka-server-start.sh config/server3.properties
+nohup bin/kafka-server-start.sh config/server1.properties > logs/kafka1_log.txt 2>&1 &
+nohup bin/kafka-server-start.sh config/server2.properties > logs/kafka2_log.txt 2>&1 &
+nohup bin/kafka-server-start.sh config/server3.properties > logs/kafka3_log.txt 2>&1 &
 ```
 List all topic 
 ```
