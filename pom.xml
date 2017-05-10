@@ -5,12 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
-
         <repository>
             <id>confluent</id>
             <url>http://packages.confluent.io/maven/</url>
         </repository>
-
     </repositories>
 
     <groupId>kafka_demo</groupId>
@@ -18,7 +16,12 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <!--#################################-->
+        <!--################faker#################-->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.10</artifactId>
+            <version>0.10.0.0</version>
+        </dependency>
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
@@ -29,21 +32,15 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
         </dependency>
-        <dependency>
+      <!--  <dependency>
             <groupId>com.github.bmoliveira</groupId>
             <artifactId>snake-yaml</artifactId>
             <version>v1.18-android</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.github.mifmif</groupId>
             <artifactId>generex</artifactId>
             <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -69,22 +66,15 @@
             <version>1.6</version>
             <scope>test</scope>
         </dependency>
+<!--################faker#################-->
 
-
-<!--#################################-->
-
-
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>monitoring-interceptors</artifactId>
-            <version>3.1.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.kafka/connect-api -->
+<!--################kafka#################-->
         <dependency>
             <groupId>org.apache.kafka</groupId>
-            <artifactId>connect-api</artifactId>
+            <artifactId>kafka_2.10</artifactId>
             <version>0.10.2.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/connect-api -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams</artifactId>
@@ -93,14 +83,16 @@
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka_2.10 -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.10</artifactId>
+            <artifactId>kafka-clients</artifactId>
             <version>0.10.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
+            <artifactId>connect-api</artifactId>
             <version>0.10.2.0</version>
         </dependency>
+        <!--################kafka#################-->
+        <!--################JSON serialization#################-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -116,28 +108,17 @@
             <artifactId>jackson-annotations</artifactId>
             <version>2.8.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.10</artifactId>
-            <version>0.10.2.0</version>
-        </dependency>
+        <!--################JSON serialization#################-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-easymock</artifactId>
-            <version>1.5.1</version>
-            <scope>test</scope>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>connect-api</artifactId>
-            <version>0.10.2.0</version>
-        </dependency>
-
 
     </dependencies>
 
@@ -172,8 +153,5 @@
             </plugin>
         </plugins>
     </build>
-
-
-
 
 </project>

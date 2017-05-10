@@ -16,7 +16,7 @@ import java.util.Properties;
  */
 public class ConsumerThread implements Runnable {
 
-    final org.slf4j.Logger logger = LoggerFactory.getLogger(ConsumerThread.class);
+    final org.slf4j.Logger logger = LoggerFactory.getLogger("ConsumerThread.class");
     private final KafkaConsumer<String, String> consumer;
     private final int partNbr;
     private String topic;
@@ -35,7 +35,8 @@ public class ConsumerThread implements Runnable {
         props.put("group.id", groupId);
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
-        props.put("session.timeout.ms", "30000");
+        props.put("session.timeout.ms", "3000");
+        props.put("heartbeat.interval.ms", "1000");//this is the heartbeat setting from zookeeper
         props.put("auto.offset.reset", "earliest");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");

@@ -15,7 +15,7 @@ import java.util.Properties;
 //we read a specific topic without looking the partitions id
 public class ConsumerTopic implements Runnable {
 
-    final Logger logger = LoggerFactory.getLogger(ConsumerTopic.class);
+    final Logger logger = LoggerFactory.getLogger("ConsumerTopic.class");
     private final KafkaConsumer<String, String> consumer;
     private final String topic;
 
@@ -32,7 +32,9 @@ public class ConsumerTopic implements Runnable {
         props.put("group.id", groupId);
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "100");
-        props.put("session.timeout.ms", "30000");
+        props.put("max.poll.interval.ms","2000");
+        props.put("heartbeat.interval.ms", "1000");//this is the heartbeat setting from zookeeper
+        props.put("session.timeout.ms", "3000");//I have issue with the heartbeat timeout and the session timeout that is greater. TODO find the heartbeat rate setting of Zookeeper/kafka
         props.put("auto.offset.reset", "earliest");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");

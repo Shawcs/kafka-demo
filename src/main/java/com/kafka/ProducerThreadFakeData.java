@@ -28,7 +28,7 @@ public class ProducerThreadFakeData implements Runnable {
     public static final String ANSI_GREEN = "\u001B[32m";
 
 
-    final Logger logger = LoggerFactory.getLogger(ProducerThreadFakeData.class);
+    final Logger logger = LoggerFactory.getLogger("ProducerThreadFakeData.class");
     private final KafkaProducer<String, String> producer;
     private final String topic;
     private final String BROKERS;
@@ -70,16 +70,17 @@ public class ProducerThreadFakeData implements Runnable {
                                 "\n ######"+"IN "+metadata.timestamp()+"? time for acknowledgment by the server");
                     }
                 });
-                i++;
+           i++;
           /*      try {
                     Thread.sleep(1000); //to avoid flood in console
                 } catch (InterruptedException ie) {
                     logger.debug("exception  "+ie);
                 }*/
                 if(i>=100||record == null){ //we block the loop if we go over i nbr of data send it's just in case you forget to stop the thread in order to not over flow the memory
-                    logger.error("exception record null");
+                    logger.error("record null or for finish "+i);
                     break;
                 }
+
             }
     }
 

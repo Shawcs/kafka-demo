@@ -11,14 +11,14 @@ public class MainProducerConsumerPartition {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-   //properties for the servers
+        //properties for the servers
         //with this we get the kafka broker values
         Properties properties = new Properties();
         InputStream inputStream = MainProducerConsumerPartition.class.getClassLoader()
                 .getResourceAsStream("kafka_broker.properties");
         properties.load(inputStream);
 
-       String brokers= String.valueOf(properties.get("BROKER"));
+        String brokers = String.valueOf(properties.get("BROKER"));
 
         //properties for the topic
         int replicationFactor = 2;//r factor max = Nbroker -1
@@ -28,10 +28,10 @@ public class MainProducerConsumerPartition {
         String groupId = "test";
         String topic = "Ticket";
         String path = String.valueOf(properties.get("FILE_PATH"));
-        String zookeeper=String.valueOf(properties.get("ZOOKEEPER"));
+        String zookeeper = String.valueOf(properties.get("ZOOKEEPER"));
 
         //creation of the topic
-        TopicCreation t = new TopicCreation(topic, partitionNumber, replicationFactor,zookeeper);
+        TopicCreation t = new TopicCreation(topic, partitionNumber, replicationFactor, zookeeper);
         Thread TopicCreation = new Thread(t);
         TopicCreation.start();
         TopicCreation.join();//wait the thread to finish
@@ -39,7 +39,8 @@ public class MainProducerConsumerPartition {
         // Start Producer Thread
         ProducerThread producerThread = new ProducerThread(brokers, topic, path);
         Thread CreateProducer = new Thread(producerThread);
-
+        CreateProducer.start();
+        CreateProducer.join();
 
         //this launch an simple consumer for a given partition
         ConsumerThread consumerPart0 =
@@ -60,17 +61,16 @@ public class MainProducerConsumerPartition {
 
 
         //the launching part of all the thread
-        CreateProducer.start();
-        CreateProducer.join();
 
         consumerPartition0.start();
-     consumerPartition0.join();
+            consumerPartition0.join();
         consumerPartition1.start();
-     consumerPartition1.join();
+            consumerPartition1.join();
         consumerPartition2.start();
-     consumerPartition2.join();
+            consumerPartition2.join();
         consumerPartition3.start();
-     consumerPartition3.join();
+            consumerPartition3.join();
+
 
     }
 
