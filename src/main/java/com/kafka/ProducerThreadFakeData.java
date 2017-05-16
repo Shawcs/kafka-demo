@@ -70,12 +70,11 @@ public class ProducerThreadFakeData implements Runnable {
                                 "\n ######"+"IN "+metadata.timestamp()+"? time for acknowledgment by the server");
                     }
                 });
+           try {
+               Thread.sleep(0); //for monitor purpose
+           } catch (InterruptedException ie) {
+           }
            i++;
-          /*      try {
-                    Thread.sleep(1000); //to avoid flood in console
-                } catch (InterruptedException ie) {
-                    logger.debug("exception  "+ie);
-                }*/
                 if(i>=100||record == null){ //we block the loop if we go over i nbr of data send it's just in case you forget to stop the thread in order to not over flow the memory
                     logger.error("record null or for finish "+i);
                     break;
@@ -99,7 +98,7 @@ public class ProducerThreadFakeData implements Runnable {
             String record =ANSI_GREEN+"Name: " +ANSI_RESET+ name +ANSI_GREEN+ "/ Birth: " +ANSI_RESET+ birthDate +ANSI_GREEN+ "/ Email: " +ANSI_RESET+ emailAddress +
                     ANSI_GREEN+ " / Phone " +ANSI_RESET+ phoneNumber +ANSI_GREEN+ " / Street: "+ANSI_RESET+ streetAddress+ANSI_GREEN+" / Credit Card: "+ ANSI_RESET+creditCard ;
 
-            logger.info(record);
+     //       logger.info(record);
             return record;
         }
 

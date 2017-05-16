@@ -21,7 +21,7 @@ public class MainProducerConsumerPartition {
         String brokers = String.valueOf(properties.get("BROKER"));
 
         //properties for the topic
-        int replicationFactor = 2;//r factor max = Nbroker -1
+        int replicationFactor = 2;//r factor max(useful) = Nbroker -1
         int partitionNumber = 4;
 
         //properties for the producer

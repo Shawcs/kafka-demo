@@ -16,7 +16,6 @@ import org.apache.kafka.streams.kstream.KTable;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -54,7 +53,7 @@ import java.util.regex.Pattern;
     **/
 public class WordCountLambdaExample {
 
-    public  static final String TOPIC_NAME="Ticket";
+    public  static final String TOPIC_NAME="Fake_Data";
 
     public static void main(final String[] args) throws Exception {
         Properties properties = new Properties();
@@ -88,8 +87,8 @@ public class WordCountLambdaExample {
         final KTable<String, Long> wordCounts = textLines
 
                 .flatMapValues(value -> Arrays.asList(pattern.split(value.toLowerCase())))
-                .filter(((key, value) -> value.equals("error")))
-                .mapValues(value -> "error")
+                .filter(((key, value) -> value.equals("julien")))
+                .mapValues(value -> "julien")
                 .groupBy((key, word) -> word)
                 .count("Counts");
 

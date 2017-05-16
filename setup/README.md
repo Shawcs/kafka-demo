@@ -2,6 +2,7 @@
 - ubuntu or other unix server in 64 bit 
 - Java sdk 1.8 64 bit or more  http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 - kafka  https://kafka.apache.org/downloads
+- Kafka-manager (https://github.com/yahoo/kafka-manager) if you want to monitor all the things
 
 # Note about the following configuration
 
@@ -480,6 +481,12 @@ Same for the file kafka-server-start.sh
 vi kafka/bin/kafka-server-start.sh
 export KAFKA_HEAP_OPTS="-Xms1g -Xmx1g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
  ```
+ and for monitoring purpose add
+ ```
+ if [ "x$KAFKA_JMX_OPTS" = "x" ]; then
+       export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=${your_ip}"
+ fi
+  ```
 The modification of the file descriptor is also recommended because kafka need a large number of socket and read operation. 
 More detail in the confluent documentation here http://docs.confluent.io/2.0.1/kafka/deployment.html#file-descriptors-and-mmap
 to do this with an ubuntu distribution : https://underyx.me/2015/05/18/raising-the-maximum-number-of-file-descriptors
@@ -547,12 +554,17 @@ See process (two way since we use nohup function)
 jps
 jobs
 ```
-
-Launch kafka servers
+To know who is leader/follower you can do 
+``
+echo stat |nc 10.23.75.126 2181
+echo stat |nc 10.23.75.126 2182
+echo stat |nc 10.23.75.126 2183
+``
+Launch kafka servers (we do export JMX-PORT for monitoring purpose again if you don't want to use it you can skip it)
 ```
-nohup bin/kafka-server-start.sh config/server1.properties > logs/kafka1_log.txt 2>&1 &
-nohup bin/kafka-server-start.sh config/server2.properties > logs/kafka2_log.txt 2>&1 &
-nohup bin/kafka-server-start.sh config/server3.properties > logs/kafka3_log.txt 2>&1 &
+export JMX_PORT=9990 && nohup bin/kafka-server-start.sh config/server1.properties > console/kafka1_log.txt 2>&1 &
+export JMX_PORT=9991 && nohup bin/kafka-server-start.sh config/server2.properties > console/kafka2_log.txt 2>&1 &
+export JMX_PORT=9992 && nohup bin/kafka-server-start.sh config/server3.properties > console/kafka3_log.txt 2>&1 &
 ```
 List all topic 
 ```
