@@ -6,9 +6,10 @@ import java.util.Properties;
 
 /**
  * Created by aturbillon on 07/04/2017.
+ * created to test how kafka work when you have two contumer groupe with the same name (to fake a multi instance app)
  */
 //this is the class to consumer a topic by a consumer group
-public class MainConsumerTopic {
+public class MainConsumerTopic2 {
 
     public static void main(String[] args) throws IOException {
      //properties for the servers
