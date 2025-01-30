@@ -1,0 +1,628 @@
+unix cmd
+
+grep manager ou transfo et 127.0.0.1 
+egrep 'Manager|Transfo' | grep 127.0.0.1
+
+version of apimanager and processe for apimanager:
+
+ps -eaf | grep vshell
+
+ps extended
+ps -f | more
+
+running proccess with name and port
+netstat -nptlu 
+
+table de routage des interfaces reseau
+
+netstat -rn
+
+ficher windows en unix
+ awk '{ sub("\r$", ""); print }' file-name > file-name
+ 
+ see all cron
+ 
+ crontab -l
+ 
+ 
+get connexion between host
+
+sudo watch -d -n1 'sudo netstat -ntplua | grep  | grep <IP or port>
+
+and watch
+sudo watch -d -n1 'sudo netstat -ntplua | grep 
+
+sudo tcpdump -vvvv -nn port 8090 | grep "10.132.222.46"
+
+cd to a folder with special starting case
+
+cd -- "-folder"
+
+create fake folder with size (windows)
+
+fsutil file createnew fichier100Mo.txt 104857600
+
+unix
+fallocate -l 5242880 ostechnix.txt
+truncate -s 5M ostechnix.txt
+ 
+ 
+grep avec ou
+
+grep "bla\|blo"
+
+print port used by a process pid
+sudo lsof -Pan -p PID -i
+
+file descriptor max unix
+ulimit -Hn
+change filedescriptor limit
+nano /etc/security/limits.conf
+USERNAME_TOCHANGE soft nofile 200000
+USERNAME_TOCHANGE hard nofile 200000
+modify the max openfile for a systemctl or JVM in service 
+LimitNOFILE=200000
+
+ps aux with bigger name field
+ ps axo user:30,cmd,pid,pcpu,pmem,vsz,rss,tty,stat,start,time,comm
+
+sudo ps aux | egrep 'Manager|Transfo|Gateway|Node' -i
+sudo netstat -nptlu | egrep 'Manager|Transfo|Gateway|Node' -i
+
+
+see all systemctl list
+
+systemctl list-units --type=service
+
+restart systemctl service
+
+sudo systemctl restart apigatewayManagerLanLaunchFilebeat.service
+
+list file with size and sorted
+
+ll -hlS
+
+print folder size
+du -sh /var
+
+print size of all doc inside folder
+du -sh *
+
+disc space
+df -h
+
+tar un dossier
+tar -czvf exempleArchive.tar.gz /folder_to_tar
+
+extraire un tar
+tar -xvf exempleArchive.tar.gz -C /where_to_unzip
+
+lister le contenu d'un tar
+tar -ztvf my_data.tar.gz
+
+log error in systemctl
+sudo journalctl -xe -p err
+
+log journal of systemctl for a specific service name
+sudo journalctl -xe -u SERVICE_NAME
+
+find string in folders
+grep -rn . -e 'string'
+
+lancer une commande détaché de la session en backgroud (type enter 2 times)
+nohup commande > /tmp/nohup_logs.log &
+puis pour voir les infos du process
+jobs
+
+temps passé sur un telnet avant le close
+
+time telnet ...
+
+connexion Vm 
+
+nc -l PORT
+
+nc IP PORT 
+
+du -h -d 1
+du -h --threshold=100M | sort -h
+
+RM big list
+sudo find . -name "*.log.gz" -exec rm {} \;
+sudo find . -name "audit.log.[0-9][0-9]" -exec rm {} \;
+sudo find . -name "*2018*" -exec rm {} \;
+
+Compter le nombre de fichier dans le repertoire courant
+find . -name "*" | wc -l
+
+clone a git wiki
+git clone url/project+.wiki.git
+
+
+Grep récurstif
+
+grep -ir -n --color "NAME" .
+
+grep que pour les nom de fichier ou le mot est trouvé
+
+grep -irnl --color "NAME" .
+
+
+get curent nano since epoch
+
+date +%s%3N
+
+/sgdsi/oauth/extranet/token
+
+KILL process with grep
+kill $(ps aux | grep 'Gateway' | awk '{print $2}')
+
+Watch all connexion in the server on 8090
+
+watch -d -n1 'netstat -at | grep 8090'
+
+REGEX to supress all html balise
+
+\<(.*?)\>|\\[^abc]
+
+
+Get certificat chaine from url
+echo | \
+>     openssl s_client -servername URL(test.api.saint-gobain.com) -connect URL(test.api.saint-gobain.com):443 2>/dev/null | \
+>     openssl x509 -text
+
+GREP 
+
+inculde line before -B4
+include line after -A4
+
+RM file with strange file name
+
+rm -rf "\NAME"
+
+
+GET USERS
+
+getent passwd
+
+userdel userName
+
+GET GROUPS 
+
+getent group
+
+sudo groupadd name
+groupdel groupname
+
+CREATE user and group
+
+sudo useradd USER -g GROUP
+
+wget with tls verification off
+wget --no-check-certificate YOUR_URL
+
+reload systemctl service after a delete
+systemctl reset-failed
+
+get curl response time
+curl -s -w %{time_total}\\n -o /dev/null YOUR_URL
+
+replace string with /
+sed -i 's+PATH_old+PATH_new+g' file_name
+
+loop a command in bash
+
+while true; do YOUR_CMD ; sleep 2; done
+
+read first line of file
+
+head -LINE NUMBER  FILE_NAME
+
+PROXY SG
+
+export http_proxy="http://fr.proxy.saint-gobain.com:8080"
+export https_proxy="http://fr.proxy.saint-gobain.com:8084"
+
+lister la taille disque:
+sudo vgs
+
+lister les partitions:
+
+sudo lvdisplay
+sudo lvs
+
+make a symlink
+
+ln -snf /pointing_directory /link_name
+
+change owner of symlink
+
+sudo chown -h user:group link_path with no \ at the end
+
+add size to volume
+
+sudo lvdisplay
+
+take the LV Path
+
+sudo lvextend -L +2G /dev/vg_system/lv_tmp
+sudo lvreduce -L -2G /dev/vg_system/lv_tmp
+sudo resize2fs /dev/mapper/vg_system-lv_tmp
+pour xfs: xfs_growfs /dev/mapper/vg_system-lv_tmp
+
+compter nbr de fichier dans tt les sous dossier
+
+find PATH -type f | wc -l
+
+compter/count/nbr line in a file
+wc -l FILE_PATH
+
+get unix release info
+
+uname -a
+ou
+lsb_release -a
+ou
+cat /etc/redhat-release
+
+date de validite d'un certificat
+
+openssl x509 -enddate -noout -in CERTFILE.xxx
+
+info sur un cert 
+
+openssl x509 -in PATH/FILE.pem -text
+
+info on p12
+
+openssl pkcs12 -info -in apicurio-user.p12 
+
+
+list cert in keystore
+keytool -v -list -storetype jks -keystore votreKeystore.jks
+
+list cert in keystore in p12 format
+keytool -list -v -keystore adfs-certs.p12 -storetype PKCS12
+
+import cert to jks
+keytool -importcert -file certificate.cer -keystore keystore.jks -alias "Alias" 
+
+
+diff between files
+
+diff -c file1 file2
+
+diff between folder 
+diff -rq folde1 folder2
+
+##############
+CASSANDRA
+###############
+print all keyspace with cqlsh
+DESCRIBE KEYSPACES
+
+print all atbles
+DESC tables;
+
+Delete keyspace
+DROP KEYSPACE [IF EXISTS] keyspace_name
+
+compter les ip unique connectee a un apache
+
+cat /var/log/httpd/portal.lan.api.saint-gobain.com_access_log |  grep "\[01/Oct/2019" |awk '{print $1 }' | sort | uniq
+
+
+####elastic####
+
+PUT _cluster/settings
+{
+  "persistent": {
+    "search.max_buckets": "50000"
+  }
+} 
+
+
+#################################
+DOCKER#
+################################
+
+Install docker on ubuntu
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) \
+stable"
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker $USER
+sudo docker run hello-world
+
+install docker-compose on ubuntu
+
+sudo apt install docker-compose
+
+
+remove volume containing a certain string
+docker volume rm $(docker volume ls | grep "sigma" | awk 'NR>1 {print $2}')
+
+remove all <none> images
+
+docker rmi $(docker images -f "dangling=true" -q) -f
+
+rm all
+docker rm $(docker ps -a -q) -f &&
+docker rmi $(docker images -q) -f &&
+docker volume prune -f
+
+rm container with name and *
+
+docker rm $(docker ps | grep NAME_TAG* | awk '{print $1}' ) -f
+
+rm all images
+docker rmi $(docker images -q) -f
+
+rm all container 
+docker rm $(docker ps -a -q) -f
+
+rm unused volume
+docker volume prune -f
+
+get sha of an image
+docker inspect --format='{{index .RepoDigests 0}}' YOUR_IMAGE
+
+query the docker socket
+
+curl -XGET --unix-socket /var/run/docker.sock http://unix.sock/containers/json?all=1
+
+find volume attached to a container
+docker inspect -f '{{ .Mounts }}' $(docker ps -a -q)
+
+big down and remove that timeout
+
+COMPOSE_HTTP_TIMEOUT=200 docker-compose down -v
+
+Notepadd:
+
+^\R => empty ligne
+
+
+SPARK:
+
+
+write tadaframe to csv on file
+
+DFNAME.coalesce(1).drop("COLNAME").write().option("header","true").csv("PATH");
+
+Mongo:
+
+not null array
+{
+  "ARRAY_FIELD": {
+    $exists: true,
+    $not: {
+      $size: 0
+    }
+  }
+}
+
+
+hadoop:
+
+
+copy folder to local machine
+
+ hadoop fs -copyToLocal hdfs://URL:9000/HDFS_PATH /LOCAL_PATH
+
+Grafana:
+ 
+REGEX grafana dashboard change data source
+^\s*"datasource":\s*\{\n\s*"type":\s*"prometheus",\n\s*"uid":\s*"\w*"\n\s*\},
+replace with
+"datasource": "thanos-querier",
+
+all url:
+
+ "url": "https://systemmetrics.tbiservices.net/d/XgBCk7V4k/kafka-view-2
+ "url": "https://systemmetrics.tbiservices.net/d/kafkainfra2/kafka-infra-detail
+
+ "url": "https://systemmetrics.tbiservices.net/d/8Z6RxGV4k/kafka-view-1
+ "url": "https://systemmetrics.tbiservices.net/d/kafkainfra1/kafka-infra-full-view
+
+ "url": "https://systemmetrics.tbiservices.net/d/xwY1W7V4k/kafka-view-3
+ "url": "https://systemmetrics.tbiservices.net/d/kafkainfra3/kafka-infra-lowest-view
+ 
+ 
+"url": "https://systemmetrics.tbiservices.net/d/TLP9qyIVk/kafka-consumer-globals
+"url": "https://systemmetrics.tbiservices.net/d/kafka_consumer/kafka-consumer
+
+"url": https://systemmetrics.tbiservices.net/d/2ZcjlsS4k/kafka-producer-globals
+"url": "https://systemmetrics.tbiservices.net/d/kafka_producer/kafka-producer
+
+"url": "https://systemmetrics.tbiservices.net/d/LwZ0PBC4z/new-clients-dashboard
+"url": "https://systemmetrics.tbiservices.net/d/kfk-clients-monitor/kafka-client-monitoring
+
+"url": "https://systemmetrics.tbiservices.net/d/Yi2A-MwVk/topic-view
+"url": "https://systemmetrics.tbiservices.net/d/topic-view/topic-view
+
+"url": "https://systemmetrics.tbiservices.net/d/OcCSPp14k/kafka-clients-experiment
+"url": "https://systemmetrics.tbiservices.net/d/kfk-clients-finder/kafka-clients-finder
+
+"url": "https://systemmetrics.tbiservices.net/d/LwZ0PBC4z/client-dashboard
+"url": "https://systemmetrics.tbiservices.net/d/kfk-clients-monitor/kafka-client-monitoring
+
+"folderId": 529,
+"folderId": 513,
+
+
+ link 
+ https://systemmetrics.tbiservices.net/d/XgBCk7V4k/kafka-view-2?refresh=5m&from=${__from}&to=${__to}&
+ ${kubernetes_namespace:queryparam}&${clustername:queryparam}&var-pod=All&var-kafka_user=${__field.labels.user:percentencode}&viewPanel=684
+ 
+##HELM and KUB
+
+###platform cli:
+
+#mettre a jour le platform cli
+platform self setup
+
+#en version dev
+platform self setup --context sbiz
+
+# give the result of values with templating done
+platform values --context sbiz
+
+#usage de YQ pour le query
+--query .global
+=> platform values --context lab-sbiz --query .global
+=> platform values --context sbiz --query .global
+
+#render template with platform
+platform template --values-files values/kafka/values-kafka.yaml --save-to-path E:/git/helmtemplate-results/kafka --split
+platform template --context lab-sbiz --save-to-path E:/git/helmtemplate-results/kafka/lab-sbiz --split
+platform template --context sbiz --save-to-path E:/git/helmtemplate-results/kafka/sbiz --split
+platform template --context dbiz --save-to-path E:/git/helmtemplate-results/kafka/dbiz --split
+platform template --context tbiz --save-to-path E:/git/helmtemplate-results/kafka/tbiz --split
+platform template --context ubiz --save-to-path E:/git/helmtemplate-results/kafka/ubiz --split
+platform template --context pbiz --save-to-path E:/git/helmtemplate-results/kafka/pbiz --split
+
+platform template --context sbiz --save-to-path E:/git/helmtemplate-results/tooling/sbiz --split
+
+
+platform template --context lodh-sbiz --save-to-path   E:/git/helmtemplate-results/pce --split
+
+#launch the rego locally
+platform validate rego --context sbiz
+#can validate on folder
+??? cmd ???
+
+#deployer depuis le poste une application en utilisant les pipeline jenkins
+#package la chart en local
+platform application release --context lodh-sbiz --application-revision 1.0.0 --prerelease --config-revision workshop
+
+#pusher cette chart dans artifactory
+platform application publish --application paymentmigrator --context lodh-sbiz --application-revision 1.0.0 --registry lodh-docker-dev.artifactory.biz.lodh.com --config-revision workshop
+
+#deployer dans le cluster depuis une chart packagée en local
+#pipeline tekton lancée
+platform application deploy --application-revision 1.0.0 --prerelease --application paymentmigator --context lodh-sbiz --product paymentmigrator --config-revision workshop 
+
+##ou alors direct en local depuis le poste sans jenkins
+platform template apply --context lab-sbiz
+
+#problème repos artifactory etc:
+platform self configure
+
+#get version of all installed component 
+platform version --full
+
+#launch helm test for kafka
+platform test helm-unit-test --suite kafka
+
+#switch contexts
+platform context switch --context lab-sbiz
+
+#pour debug des var:
+{{ $mtlsData | toYaml }}
+
+#generate doc of platform
+helm-docs -f values-documentation.yaml
+
+##oc
+get CR list based on a CR type and filter on a label value
+oc get kafkaTopic --namespace infra-kafka-sbiz -l component=bank
+
+helm templating:
+
+helm template . --values .\values.yaml --output-dir  E:\git\helmtemplate-results
+
+helm template . --values .\values-lab-sbiz.yaml --output-dir  E:\git\helmtemplate-results\new\deploy\lab-sbiz & helm template . --values .\values-sbiz.yaml --output-dir  E:\git\helmtemplate-results\new\deploy\sbiz & helm template . --values .\values-dbiz.yaml --output-dir  E:\git\helmtemplate-results\new\deploy\dbiz & helm template . --values .\values-tbiz.yaml --output-dir  E:\git\helmtemplate-results\new\deploy\tbiz & helm template . --values .\values-ubiz.yaml --output-dir  E:\git\helmtemplate-results\new\deploy\ubiz & helm template . --values .\values-pbiz.yaml --output-dir  E:\git\helmtemplate-results\new\deploy\pbiz
+
+testing helm chart with: https://github.com/helm-unittest/helm-unittest#usage
+
+helm unittest --file tests/*_test.yaml .
+
+helm tag if else
+{{ if $.Values.global.locontext.tag }} {{- else }} {{- end }}
+
+deploy a crd:
+kubectl apply -f crd/CRD-helm-kafka-addon.yaml
+
+get cr label for a kind
+oc get kafkatopic --output custom-columns=KAFKATOPOPIC:.metadata.name,ocpdeployversion:".metadata.annotations.toto\.com/deploy-application-version",APPLICATION:".metadata.labels.toto\.com/application",COMPONENT:".metadata.labels.toto\.com/component"
+
+oc drop all cr of a kind
+oc delete kafkauser  -n infra-kafka-tbiz --all
+
+get config map from etcd
+
+from pod etcd master
+etcdctl get /kubernetes.io/configmaps/infra-kafka-lab-sbiz/first-test --keys-only
+
+Count the bytes size of the map from etcd:
+
+etcdctl get /kubernetes.io/configmaps/infra-kafka-lab-sbiz/first-test --print-value-only | wc -c 
+
+suppress a CRD:
+
+kubectl delete -f crd/CRD-helm-kafka-addon.yaml
+
+forward a pod port to loacl 
+kubectl port-forward connect-lodh-connect-86bd8789dc-ll8tz 9999:9999
+
+Release readme:
+
+# Impact for users:
+
+# New feature for users:
+
+# Details of version:
+## component name
+* FIX 
+* ADDED
+
+open terminal inside a pod from terminal
+oc rsh <POD_NAME>
+
+copy file from pod to local
+oc rsync POD_NAME:POD_PATH LOCAL_PATH
+
+#helm test
+
+  - it: should create CR Certificate and kafka User and no Client
+    template: *template
+    set:
+      kafka:
+        enabled: true
+        ismTLS: true
+    asserts:
+      - hasDocuments: {"count": 2}
+      - equal: {"path": "kind", "value": "Certificate"}
+        documentSelector:
+          path: .kind
+          value: Certificate
+      - equal: {"path": "kind", "value": "KafkaUser"}
+        documentSelector:
+          path: .kind
+          value: KafkaUser
+      - notEqual: {"path": "kind", "value": "Client"
+
+
+OCPdeploy
+curl -X 'POST' \
+'https://openshift-deployer-infra-tekton.apps.dev.ocp.dev.biz.lodh.com/deployment/deploy?team=ARTE&sysapp=bank&contexts=LODH&itEnv=SANDBOX&sysappVersion=feature%2Fkafka_topic_alex' \
+
+#Kafka monitoring
+
+doc:  https://kafka.apache.org/documentation/#kafka_streams_thread_monitoring
+
+topics:
+
+paymentexecution--lodh------paymentOrder--req--1
+
+
+
+
+##KAFKA
+
+https://strimzi.io/blog/2021/12/17/kafka-segment-retention/
+dumping log directly from file:
+./bin/kafka-run-class.sh kafka.tools.DumpLogSegments --deep-iteration --print-data-log --files /var/lib/kafka/data-0/kafka-log0/crmgraphbuilder--lodh------portfolio-retry-1--evt--1-2/00000000000000000000.log
