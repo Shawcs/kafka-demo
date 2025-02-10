@@ -419,44 +419,6 @@ REGEX grafana dashboard change data source
 replace with
 "datasource": "thanos-querier",
 
-all url:
-
- "url": "https://systemmetrics.tbiservices.net/d/XgBCk7V4k/kafka-view-2
- "url": "https://systemmetrics.tbiservices.net/d/kafkainfra2/kafka-infra-detail
-
- "url": "https://systemmetrics.tbiservices.net/d/8Z6RxGV4k/kafka-view-1
- "url": "https://systemmetrics.tbiservices.net/d/kafkainfra1/kafka-infra-full-view
-
- "url": "https://systemmetrics.tbiservices.net/d/xwY1W7V4k/kafka-view-3
- "url": "https://systemmetrics.tbiservices.net/d/kafkainfra3/kafka-infra-lowest-view
- 
- 
-"url": "https://systemmetrics.tbiservices.net/d/TLP9qyIVk/kafka-consumer-globals
-"url": "https://systemmetrics.tbiservices.net/d/kafka_consumer/kafka-consumer
-
-"url": https://systemmetrics.tbiservices.net/d/2ZcjlsS4k/kafka-producer-globals
-"url": "https://systemmetrics.tbiservices.net/d/kafka_producer/kafka-producer
-
-"url": "https://systemmetrics.tbiservices.net/d/LwZ0PBC4z/new-clients-dashboard
-"url": "https://systemmetrics.tbiservices.net/d/kfk-clients-monitor/kafka-client-monitoring
-
-"url": "https://systemmetrics.tbiservices.net/d/Yi2A-MwVk/topic-view
-"url": "https://systemmetrics.tbiservices.net/d/topic-view/topic-view
-
-"url": "https://systemmetrics.tbiservices.net/d/OcCSPp14k/kafka-clients-experiment
-"url": "https://systemmetrics.tbiservices.net/d/kfk-clients-finder/kafka-clients-finder
-
-"url": "https://systemmetrics.tbiservices.net/d/LwZ0PBC4z/client-dashboard
-"url": "https://systemmetrics.tbiservices.net/d/kfk-clients-monitor/kafka-client-monitoring
-
-"folderId": 529,
-"folderId": 513,
-
-
- link 
- https://systemmetrics.tbiservices.net/d/XgBCk7V4k/kafka-view-2?refresh=5m&from=${__from}&to=${__to}&
- ${kubernetes_namespace:queryparam}&${clustername:queryparam}&var-pod=All&var-kafka_user=${__field.labels.user:percentencode}&viewPanel=684
- 
 ##HELM and KUB
 
 ###platform cli:
@@ -499,7 +461,7 @@ platform validate rego --context sbiz
 platform application release --context lodh-sbiz --application-revision 1.0.0 --prerelease --config-revision workshop
 
 #pusher cette chart dans artifactory
-platform application publish --application paymentmigrator --context lodh-sbiz --application-revision 1.0.0 --registry lodh-docker-dev.artifactory.biz.lodh.com --config-revision workshop
+platform application publish --application paymentmigrator --context lodh-sbiz --application-revision 1.0.0 --registry docker-dev.artifactory --config-revision workshop
 
 #deployer dans le cluster depuis une chart packagée en local
 #pipeline tekton lancée
