@@ -30,7 +30,7 @@ rules:
 
 ### This 4 print all the kafka.server metrics
   - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_socket_$2
+    name: debug_kafka_server_$2
     labels:
       pattern_id: "2"
       cust_$1: $2
@@ -40,7 +40,7 @@ rules:
       cust_metric: $9
 
   - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_socket_$2
+    name: debug_kafka_server_$2
     labels:
       pattern_id: "3"
       cust_$1: $2
@@ -48,14 +48,14 @@ rules:
       cust_$5: $6
       cust_metric: $7
   - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_socket_$2
+    name: debug_kafka_server_$2
     labels:
       pattern_id: "4"
       cust_$1: $2
       cust_$3: $4
       cust_metric: $5
   - pattern: 'kafka.server<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_socket_$2
+    name: debug_kafka_server_$2
     labels:
       pattern_id: "5"
       cust_$1: $2
