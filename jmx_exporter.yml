@@ -2,6 +2,20 @@ startDelaySeconds: 20
 lowercaseOutputName: true
 lowercaseOutputLabelNames: false
 rules:
+#JVM specific
+  - pattern: 'java.lang<(.+)=(.+), (.+)=(.+)><>(.+):'
+    name: debug_java_lang_$2
+    labels:
+      pattern_id: "0.1"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+  - pattern: 'java.lang<(.+)=(.+)><>(.+):'
+    name: debug_java_lang_$2
+    labels:
+      pattern_id: "0.2"
+      cust_$1: $2
+      cust_metric: $3
 #for percentile we will keep only 50|75|95|99
   #filtered out 98, 999
   #utils
