@@ -1,0 +1,200 @@
+startDelaySeconds: 20
+lowercaseOutputName: true
+lowercaseOutputLabelNames: false
+rules:
+#for percentile we will keep only 50|75|95|99
+  #filtered out 98, 999
+  #utils
+  #we exclude FiveMinuteRate and FifteenMinuteRate metric
+  - pattern: 'kafka.utils<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_utils_$2
+    labels:
+      pattern_id: "1"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+
+### This 4 print all the kafka.server metrics
+  - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_socket_$2
+    labels:
+      pattern_id: "2"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_$7: $8
+      cust_metric: $9
+
+  - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_socket_$2
+    labels:
+      pattern_id: "3"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_metric: $7
+  - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_socket_$2
+    labels:
+      pattern_id: "4"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+  - pattern: 'kafka.server<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_socket_$2
+    labels:
+      pattern_id: "5"
+      cust_$1: $2
+      cust_metric: $3
+
+#network
+  - pattern: 'kafka.network<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_network_$2
+    labels:
+      pattern_id: "6"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_$7: $8
+      cust_metric: $9
+      #This is by far the metric that output the most line
+      #MAX/MIN could be filtered out
+  - pattern: 'kafka.network<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_network_$2
+    labels:
+      pattern_id: "7"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_metric: $7
+  - pattern: 'kafka.network<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_network_$2
+    labels:
+      pattern_id: "8"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+  #output nothing has expected
+  - pattern: 'kafka.network<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_network_$2
+    labels:
+      pattern_id: "9"
+      cust_$1: $2
+      cust_metric: $3
+
+##LOG
+  - pattern: 'kafka.log<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_log_$2
+    labels:
+      pattern_id: "10"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_$7: $8
+      cust_metric: $9
+  - pattern: 'kafka.log<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_log_$2
+    labels:
+      pattern_id: "11"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_metric: $7
+  - pattern: 'kafka.log<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_log_$2
+    labels:
+      pattern_id: "12"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+  #output nothing has expected
+  - pattern: 'kafka.log<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_log_$2
+    labels:
+      pattern_id: "13"
+      cust_$1: $2
+      cust_metric: $3
+
+#coordinator.transaction
+  - pattern: 'kafka.coordinator.transaction<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_coordinator_transaction_$2
+    labels:
+      pattern_id: "14"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+  - pattern: 'kafka.coordinator.transaction<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_coordinator_transaction_$2
+    labels:
+      pattern_id: "15"
+      cust_$1: $2
+      cust_metric: $3
+
+#coordinator.group
+  - pattern: 'kafka.coordinator.group<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_coordinator_group_$2
+    labels:
+      pattern_id: "16"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+
+  #output nothing has expected
+  - pattern: 'kafka.coordinator.group<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_coordinator_group_$2
+    labels:
+      pattern_id: "17"
+      cust_$1: $2
+      cust_metric: $3
+
+#controller
+  - pattern: 'kafka.controller<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_controller_$2
+    labels:
+      pattern_id: "18"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+
+  #output nothing has expected
+  - pattern: 'kafka.controller<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_controller_$2
+    labels:
+      pattern_id: "19"
+      cust_$1: $2
+      cust_metric: $3
+
+#cluster
+  - pattern: 'kafka.cluster<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_cluster_$2
+    labels:
+      pattern_id: "20"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_$7: $8
+      cust_metric: $9
+  #output nothing has expected
+  - pattern: 'kafka.cluster<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_cluster_$2
+    labels:
+      pattern_id: "21"
+      cust_$1: $2
+      cust_$3: $4
+      cust_$5: $6
+      cust_metric: $7
+  #output nothing has expected
+  - pattern: 'kafka.cluster<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_cluster_$2
+    labels:
+      pattern_id: "22"
+      cust_$1: $2
+      cust_$3: $4
+      cust_metric: $5
+  #output nothing has expected
+  - pattern: 'kafka.cluster<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
+    name: debug_kafka_cluster_$2
+    labels:
+      pattern_id: "23"
+      cust_$1: $2
+      cust_metric: $3
