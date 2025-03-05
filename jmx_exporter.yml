@@ -1,214 +1,387 @@
-startDelaySeconds: 20
+---
+startDelaySeconds: 60
 lowercaseOutputName: true
-lowercaseOutputLabelNames: false
+lowercaseOutputLabelNames: true
 rules:
-#JVM specific
-  - pattern: 'java.lang<(.+)=(.+), (.+)=(.+)><>(.+):'
-    name: debug_java_lang_$2
+  
+###############
+#kafka.network#
+###############
+  #MBean: kafka.network:type=RequestMetrics,name=ErrorsPerSec,request={requestType},error={error-code}
+  #gives: kafka_network_requestmetrics_errorspersec_count_total{error="NONE",metric="ErrorsPerSec",pat_id="1",request="ApiVersions"}
+  #No need to add the value type at the end because type counter does it automatically
+  - pattern: 'kafka.network<type=(\S+), name=(\S+), request=(\S+), error=(\S+)><>(Count)'
+    name: kafka_network_$1_$2
+    type: COUNTER
+    help: |
+      "Number of errors in responses counted per-request-type, per-error-code. If a response contains multiple errors,
+      all are counted. error=NONE indicates successful responses."
     labels:
-      pattern_id: "0.1"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-  - pattern: 'java.lang<(.+)=(.+)><>(.+):'
-    name: debug_java_lang_$2
+      type: "$1"
+      metric: "$2"
+      request: "$3"
+      error: "$4"
+      attribute: "$5"
+      pat_id: "1.0"
+  #MBEean: kafka.network:type=RequestMetrics,name=RequestsPerSec,request={Produce|FetchConsumer|FetchFollower},version=([0-9]+)
+  #gives: kafka_network_requestmetrics_requestspersec_count_total{metric="RequestsPerSec",pat_id="2",request="AlterUserScramCredentials",version="0"} 2.0
+  #No need to add the value type at the end because type counter does it automatically
+  - pattern: 'kafka.network<type=(\S+), name=(\S+), request=(\S+), version=(\S+)><>(Count)'
+    name: kafka_network_$1_$2
+    type: COUNTER
+    help: |
+      "The request rate. version refers to the API version of the request type. To get the total count for a
+      specific request type, make sure that JMX monitoring tools aggregate across different versions."
     labels:
-      pattern_id: "0.2"
-      cust_$1: $2
-      cust_metric: $3
-#for percentile we will keep only 50|75|95|99
-  #filtered out 98, 999
-  #utils
-  #we exclude FiveMinuteRate and FifteenMinuteRate metric
-  - pattern: 'kafka.utils<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_utils_$2
+      type: "$1"
+      metric: "$2"
+      request: "$3"
+      version: "$4"
+      attribute: "$5"
+      pat_id: "1.1"
+  #MBean:kafka.network:type=Acceptor,name=AcceptorBlockedPercent,listener={listener_name}
+  # "kafka.network:type=*, name=*, listener=*"
+  - pattern: 'kafka.network<type=(\S+), name=(\S+), listener=(\S+)><>(Count|OneMinuteRate)'
+    name: kafka_network_$1_$2
+    type: GAUGE
+    help: |
+      "no doc for this metric but from the JMX explorer, it measures the percentage of time the acceptor thread is
+      blocked from accepting new connections. The rate represent the block time in nanoseconds and the count is
+      the actual percent of time the thread block"
     labels:
-      pattern_id: "1"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
+      type: "$1"
+      metric: "$2"
+      listener: "$3"
+      attribute: "$4"
+      pat_id: "1.2"
+  #MBean: kafka.network:type=RequestChannel,name=ResponseQueueSize,networkProcessor=([0-9]+)
+  - pattern: 'kafka.network<type=(\S+), name=(\S+), networkProcessor=(\S+)><>(Value)'
+    name: kafka_network_$1_$2
+    type: GAUGE
+    help: |
+      "The average fraction of time the network processor threads are idle.
+      Values are between 0 (all resources are used) and 1 (all resources are available).Ideally this is less than 0.3."
+    labels:
+      type: "$1"
+      metric: "$2"
+      networkProcessor: "$3"
+      attribute: "$4"
+      pat_id: "1.3"
+  #MBean: kafka.network:type=RequestChannel,name=ResponseQueueSize,networkProcessor=([0-9]+)
+  - pattern: 'kafka.network<type=(\S+), name=(\S+), processor=(\S+)><>(Value)'
+    name: kafka_network_$1_$2
+    type: GAUGE
+    help: |
+      "This metric is specific to each network processor the cluster lists. This represent
+      the size of the response queue. The response queue is unbounded. A congested response queue can result
+      in delayed response times and memory pressure on the broker."
+    labels:
+      type: "$1"
+      metric: "$2"
+      processor: "$3"
+      attribute: "$4"
+      pat_id: "1.4"
+  #MBean: kafka.network:type=RequestMetrics,name=RemoteTimeMs,request={.*}
+  - pattern: 'kafka.network<type=(\S+), name=(\S+), request=(\S+)><>(Count|Mean|Min|Max)'
+    name: kafka_network_$1_$2_$4
+    type: GAUGE
+    help: |
+      "Count equals the absolute count of number of requests since process start, 
+      Mean is the average time for all requests completion, min and max are related to completion time too"
+    labels:
+      type: "$1"
+      metric: "$2"
+      request: "$3"
+      attribute: "$4"
+      pat_id: "1.5"
+  #verry big one
+  #MBean: kafka.network:type=RequestMetrics,name=RemoteTimeMs,request={.*}:Percentile only
+  - pattern: 'kafka.network<type=(\S+), name=(\S+), request=(\S+)><>(\d{1,2})thPercentile'
+    name: kafka_network_$1_$2_percentile
+    type: GAUGE
+    help: |
+      "This represent the latency percentile for all kind of request kafka cluster handle"
+    labels:
+      type: "$1"
+      metric: "$2"
+      request: "$3"
+      quantile: "0.$4"
+      pat_id: "1.6"
+  #MBean: kafka.network:type=RequestChannel,name=ResponseQueueSize
+  #MBean: kafka.network:type=RequestChannel,name=RequestQueueSize
+  #MBean: kafka.network:type=SocketServer,name=NetworkProcessorAvgIdlePercent
+  #MBean: kafka.network:type=SocketServer,name=ExpiredConnectionsKilledCount
+  #MBean: kafka.network:type=SocketServer,name=MemoryPoolAvailable
+  #MBean: kafka.network:type=SocketServer,name=MemoryPoolUsed
+  - pattern: 'kafka.network<type=(\S+), name=(\S+)><>(\S+):'
+    name: kafka_network_$1_$2_$3
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "1.7"
+###############
+#Controller part
+###############
+  #MBean: kafka.network:type=SocketServer,name=MemoryPoolUsed
+  #MBean: kafka.controller:type=ControllerStats,name={*}
+  #MBean: kafka.controller:type=ControllerEventManager,name={*}
+  #MBean: kafka.controller:type=KafkaController,name={*}
+  - pattern: 'kafka.controller<type=(\S+), name=(\S+)><>(Value|Count|Mean|Min|Max)'
+    name: kafka_controller_$1_$2_$3
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "2.0"
+  - pattern: 'kafka.controller<type=(\S+), name=(\S+)><>(\d{1,2})thPercentile'
+    name: kafka_controller_$1_$2_percentile
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      quantile: "0.$3"
+      pat_id: "2.1"
 
-### This 4 print all the kafka.server metrics
-  - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_server_$2
+###########
+#kafka log#
+###########
+  #kafka.log:name=LogEndOffset,type=Log,attribute=Value
+  #kafka.log:name=LogStartOffset,type=Log,attribute=Value
+  #  kafka.log:name=NumLogSegments,type=Log,attribute=Value
+  #  kafka.log:name=Size,type=Log,attribute=Value
+  - pattern: 'kafka.log<type=(\S+), name=(\S+), topic=(\S+), partition=(\S+)><>(Value)'
+    name: kafka_log_$1_$2
+    type: GAUGE
     labels:
-      pattern_id: "2"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_$7: $8
-      cust_metric: $9
+      type: "$1"
+      metric: "$2"
+      topic: "$3"
+      partition: "$4"
+      attribute: "$5"
+      pat_id: "3.0"
+  - pattern: 'kafka.log<type=(\S+), name=(\S+), logDirectory=(\S+)><>(Value)'
+    name: kafka_log_$1_$2
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      logDirectory: "$3"
+      attribute: "$4"
+      pat_id: "3.1"
+  #kafka.log:name=DeadThreadCount,type=LogCleaner,attribute=Value
+  - pattern: 'kafka.log<type=(\S+), name=(\S+)><>(Value|Count|MeanRate|Mean|Min|Max)'
+    name: kafka_log_$1_$2_$3
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "3.2"
+  - pattern: 'kafka.log<type=(\S+), name=(\S+)><>(\d{1,2})thPercentile'
+    name: kafka_log_$1_$2_percentile
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      quantile: "0.$3"
+      pat_id: "3.3"
+  ##kafka.coordinator.group
+  #kafka.coordinator.group:type=GroupMetadataManager,name=NumGroupsPreparingRebalance
+  - pattern: 'kafka.coordinator.group<type=(\S+), name=(\S+)><>(Value)'
+    name: kafka_coordinator_group_$1_$2
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "3.4"
+  ##kafka.coordinator.transaction
+  #kafka.coordinator.transaction:type=TransactionMarkerChannelManager,name=LogAppendRetryQueueSize
+  - pattern: 'kafka.coordinator.transaction<type=(\S+), name=(\S+)><>(Value)'
+    name: kafka_coordinator_transaction_$1_$2
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "3.5"
 
-  - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_server_$2
+###############
+#kafka.cluster#
+###############
+  - pattern: 'kafka.cluster<type=(\S+), name=(\S+), topic=(\S+), partition=(\S+)><>(Value)'
+    name: kafka_coordinator_transaction_$1_$2
+    type: GAUGE
     labels:
-      pattern_id: "3"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_metric: $7
-  - pattern: 'kafka.server<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_server_$2
-    labels:
-      pattern_id: "4"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-  - pattern: 'kafka.server<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_server_$2
-    labels:
-      pattern_id: "5"
-      cust_$1: $2
-      cust_metric: $3
+      type: "$1"
+      metric: "$2"
+      topic: "$3"
+      partition: "$4"
+      attribute: "$5"
+      pat_id: "3.6"
 
-#network
-  - pattern: 'kafka.network<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_network_$2
+##############
+#kafka.server#
+##############
+  #kafka.server:type=FetcherStats,name=BytesPerSec,clientId={.*},brokerHost={.*},brokerPort={.*}
+  #kafka.server:type=FetcherStats,name=RequestsPerSec,clientId={.*}brokerHost={.*},brokerPort={.*}
+  - pattern: 'kafka.server<type=(\S+), name=(\S+), clientId=(\S+), brokerHost=(\S+), brokerPort=(\S+)><>(Count|MeanRate|OneMinuteRate):'
+    name: kafka_server_$1_$2_$6
+    help: "the rate is in seconds and the count is in bytes"
+    type: GAUGE
     labels:
-      pattern_id: "6"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_$7: $8
-      cust_metric: $9
-      #This is by far the metric that output the most line
-      #MAX/MIN could be filtered out
-  - pattern: 'kafka.network<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_network_$2
+      type: "$1"
+      metric: "$2"
+      clientId: "$3"
+      broker: "$4"
+      port: "$5"
+      attribute: "$6"
+      pat_id: "4.0"
+  #kafka.server:name=ConsumerLag,type=FetcherLagMetrics,attribute=Value
+  - pattern: 'kafka.server<type=(\S+), name=(\S+), clientId=(\S+), topic=(\S+), partition=(\S+)><>(.+):'
+    name: kafka_server_$1_$2
+    type: GAUGE
     labels:
-      pattern_id: "7"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_metric: $7
-  - pattern: 'kafka.network<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_network_$2
+      type: "$1"
+      metric: "$2"
+      clientId: "$3"
+      topic: "$4"
+      partition: "$5"
+      attribute: "$6"
+      pat_id: "4.1"
+  - pattern: 'kafka.server<type=(\S+), cipher=(\S+), protocol=(\S+), listener=(\S+), networkProcessor=(\S+)><>(.+):'
+    name: kafka_server_$1_$6
+    type: COUNTER
     labels:
-      pattern_id: "8"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-  #output nothing has expected
-  - pattern: 'kafka.network<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_network_$2
+      type: "$1"
+      cipher: "$2"
+      protocol: "$3"
+      listener: "$4"
+      networkProcessor: "$5"
+      attribute: "$6"
+      pat_id: "4.2"
+  - pattern: 'kafka.server<type=(\S+), clientSoftwareName=(\S+), clientSoftwareVersion=(\S+), listener=(\S+), networkProcessor=(\S+)><>(.+):'
+    name: kafka_server_$1_$6
+    type: COUNTER
     labels:
-      pattern_id: "9"
-      cust_$1: $2
-      cust_metric: $3
-
-##LOG
-  - pattern: 'kafka.log<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_log_$2
+      type: "$1"
+      clientSoftwareName: "$2"
+      clientSoftwareVersion: "$3"
+      listener: "$4"
+      networkProcessor: "$5"
+      attribute: "$6"
+      pat_id: "4.3"
+  - pattern: 'kafka.server<type=(\S+), name=(.+), clientId=(\S+), topic=(\S+)><>(.+):'
+    name: kafka_server_$1_$2
+    type: GAUGE
     labels:
-      pattern_id: "10"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_$7: $8
-      cust_metric: $9
-  - pattern: 'kafka.log<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_log_$2
+      type: "$1"
+      metric: "$2"
+      clientId: "$3"
+      topic: "$4"
+      attribute: "$5"
+      pat_id: "4.4"
+  - pattern: 'kafka.server<type=(\S+), broker-id=(\S+), fetcher-id=(\S+)><>(.+):'
+    name: kafka_server_$1_$4
+    type: GAUGE
     labels:
-      pattern_id: "11"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_metric: $7
-  - pattern: 'kafka.log<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_log_$2
+      type: "$1"
+      broker-id: "$2"
+      fetcher-id: "$3"
+      attribute: "$4"
+      pat_id: "4.5"
+  - pattern: 'kafka.server<type=(\S+), listener=(\S+), networkProcessor=(\S+)><>(.+):'
+    name: kafka_server_$1_$4
+    type: GAUGE
     labels:
-      pattern_id: "12"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-  #output nothing has expected
-  - pattern: 'kafka.log<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_log_$2
+      type: "$1"
+      listener: "$2"
+      networkProcessor: "$3"
+      attribute: "$4"
+      pat_id: "4.6"
+  - pattern: 'kafka.server<type=(\S+), name=(\S+), delayedOperation=(\S+)><>(Value):'
+    name: kafka_server_$1_$2
+    type: COUNTER
+    help: |
+      "The number of requests waiting in the purgatory. This should be non-zero when acks=all is used on the producer.
+      This is high if consumers use a large value for fetch.wait.max.ms"
     labels:
-      pattern_id: "13"
-      cust_$1: $2
-      cust_metric: $3
-
-#coordinator.transaction
-  - pattern: 'kafka.coordinator.transaction<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_coordinator_transaction_$2
+      type: "$1"
+      metric: "$2"
+      delayedOperation: "$3"
+      attribute: "$4"
+      pat_id: "4.7"
+  - pattern: 'kafka.server<type=(\S+), name=(\S+), clientId=(\S+)><>(.+):'
+    name: kafka_server_$1_$2
     labels:
-      pattern_id: "14"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-  - pattern: 'kafka.coordinator.transaction<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_coordinator_transaction_$2
+      type: "$1"
+      metric: "$2"
+      clientId: "$3"
+      attribute: "$4"
+      pat_id: "4.8"
+  - pattern: 'kafka.server<type=(\S+), name=ClusterId><>(Value):(.+)'
+    name: kafka_server_$1_$2
+    value: 1
     labels:
-      pattern_id: "15"
-      cust_$1: $2
-      cust_metric: $3
-
-#coordinator.group
-  - pattern: 'kafka.coordinator.group<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_coordinator_group_$2
+      type: "$1"
+      metric: "ClusterId"
+      currentId: "$3"
+      attribute: "$2"
+      pat_id: "4.9"
+  - pattern: 'kafka.server<type=(\S+), BrokerId=(\S+)><>(.+):'
+    name: kafka_server_$1_$3
     labels:
-      pattern_id: "16"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-
-  #output nothing has expected
-  - pattern: 'kafka.coordinator.group<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_coordinator_group_$2
+      type: "$1"
+      brokerId: "$2"
+      attribute: "$3"
+      pat_id: "4.10"
+  - pattern: 'kafka.server<type=(\S+), name=(\S+)><>(Value):'
+    name: kafka_server_$1_$2
+    type: GAUGE
     labels:
-      pattern_id: "17"
-      cust_$1: $2
-      cust_metric: $3
-
-#controller
-  - pattern: 'kafka.controller<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_controller_$2
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "4.11"
+  - pattern: 'kafka.server<type=(\S+), name=(\S+)><>(Count|MeanRate|Mean|OneMinuteRate):'
+    name: kafka_server_$1_$2_$3
+    type: GAUGE
+    help: "count is in bytes and the rate is in bytes/seconds"
     labels:
-      pattern_id: "18"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-
-  #output nothing has expected
-  - pattern: 'kafka.controller<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_controller_$2
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "4.12"
+  - pattern: 'kafka.server<type=(\S+), name=(\S+)><>(\d{1,2})thPercentile'
+    name: kafka_server_$1_$2_percentile
+    type: GAUGE
     labels:
-      pattern_id: "19"
-      cust_$1: $2
-      cust_metric: $3
-
-#cluster
-  - pattern: 'kafka.cluster<(.+)=(.+), (.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_cluster_$2
+      type: "$1"
+      metric: "$2"
+      attribute: "quantile"
+      quantile: "0.$3"
+      pat_id: "4.13"
+  - pattern: 'kafka.server<type=app-info><>(version):(.+)'
+    name: kafka_server_$1
+    value: 1
     labels:
-      pattern_id: "20"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_$7: $8
-      cust_metric: $9
-  #output nothing has expected
-  - pattern: 'kafka.cluster<(.+)=(.+), (.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_cluster_$2
+      type: "app-info"
+      kafkaVersion: "$2"
+      pat_id: "4.14"
+  #Trick to get the string value of the broker current state has a label
+  - pattern: 'kafka.server<type=(\S+)><>(current-state):(.+)'
+    name: kafka_server_$1_current_state
+    value: 1
     labels:
-      pattern_id: "21"
-      cust_$1: $2
-      cust_$3: $4
-      cust_$5: $6
-      cust_metric: $7
-  #output nothing has expected
-  - pattern: 'kafka.cluster<(.+)=(.+), (.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_cluster_$2
+      type: "$1"
+      currentState: "$3"
+      pat_id: "4.15"
+  - pattern: 'kafka.server<type=(\S+)><>(.+):'
+    name: kafka_server_$1_$2
     labels:
-      pattern_id: "22"
-      cust_$1: $2
-      cust_$3: $4
-      cust_metric: $5
-  #output nothing has expected
-  - pattern: 'kafka.cluster<(.+)=(.+)><>(?!98thPercentile|999thPercentile|FiveMinuteRate|FifteenMinuteRate|StdDev)(.+):'
-    name: debug_kafka_cluster_$2
-    labels:
-      pattern_id: "23"
-      cust_$1: $2
-      cust_metric: $3
+      metric: "$1"
+      attribute: "$2"
+      pat_id: "4.16"
