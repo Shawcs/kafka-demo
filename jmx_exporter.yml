@@ -114,13 +114,14 @@ rules:
   #MBean: kafka.network:type=SocketServer,name=MemoryPoolAvailable
   #MBean: kafka.network:type=SocketServer,name=MemoryPoolUsed
   - pattern: 'kafka.network<type=(\S+), name=(\S+)><>(\S+):'
-    name: kafka_network_$1_$2_$3
+    name: kafka_network_$1_$2
     type: GAUGE
     labels:
       type: "$1"
       metric: "$2"
       attribute: "$3"
       pat_id: "1.7"
+
 ###############
 #Controller part
 ###############
@@ -128,7 +129,7 @@ rules:
   #MBean: kafka.controller:type=ControllerStats,name={*}
   #MBean: kafka.controller:type=ControllerEventManager,name={*}
   #MBean: kafka.controller:type=KafkaController,name={*}
-  - pattern: 'kafka.controller<type=(\S+), name=(\S+)><>(Value|Count|Mean|Min|Max)'
+  - pattern: 'kafka.controller<type=(\S+), name=(\S+)><>(Count|Mean|Min|Max)'
     name: kafka_controller_$1_$2_$3
     type: GAUGE
     labels:
@@ -136,6 +137,14 @@ rules:
       metric: "$2"
       attribute: "$3"
       pat_id: "2.0"
+  - pattern: 'kafka.controller<type=(\S+), name=(\S+)><>(Value)'
+    name: kafka_controller_$1_$2
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "2.1"
   - pattern: 'kafka.controller<type=(\S+), name=(\S+)><>(\d{1,2})thPercentile'
     name: kafka_controller_$1_$2_percentile
     type: GAUGE
@@ -143,7 +152,7 @@ rules:
       type: "$1"
       metric: "$2"
       quantile: "0.$3"
-      pat_id: "2.1"
+      pat_id: "2.2"
 
 ###########
 #kafka log#
@@ -172,7 +181,7 @@ rules:
       attribute: "$4"
       pat_id: "3.1"
   #kafka.log:name=DeadThreadCount,type=LogCleaner,attribute=Value
-  - pattern: 'kafka.log<type=(\S+), name=(\S+)><>(Value|Count|MeanRate|Mean|Min|Max)'
+  - pattern: 'kafka.log<type=(\S+), name=(\S+)><>(Count|MeanRate|Mean|Min|Max)'
     name: kafka_log_$1_$2_$3
     type: GAUGE
     labels:
@@ -180,6 +189,14 @@ rules:
       metric: "$2"
       attribute: "$3"
       pat_id: "3.2"
+  - pattern: 'kafka.log<type=(\S+), name=(\S+)><>(Value)'
+    name: kafka_log_$1_$2
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      attribute: "$3"
+      pat_id: "3.3"
   - pattern: 'kafka.log<type=(\S+), name=(\S+)><>(\d{1,2})thPercentile'
     name: kafka_log_$1_$2_percentile
     type: GAUGE
@@ -187,7 +204,7 @@ rules:
       type: "$1"
       metric: "$2"
       quantile: "0.$3"
-      pat_id: "3.3"
+      pat_id: "3.4"
   ##kafka.coordinator.group
   #kafka.coordinator.group:type=GroupMetadataManager,name=NumGroupsPreparingRebalance
   - pattern: 'kafka.coordinator.group<type=(\S+), name=(\S+)><>(Value)'
@@ -197,7 +214,7 @@ rules:
       type: "$1"
       metric: "$2"
       attribute: "$3"
-      pat_id: "3.4"
+      pat_id: "3.5"
   ##kafka.coordinator.transaction
   #kafka.coordinator.transaction:type=TransactionMarkerChannelManager,name=LogAppendRetryQueueSize
   - pattern: 'kafka.coordinator.transaction<type=(\S+), name=(\S+)><>(Value)'
@@ -207,20 +224,6 @@ rules:
       type: "$1"
       metric: "$2"
       attribute: "$3"
-      pat_id: "3.5"
-
-###############
-#kafka.cluster#
-###############
-  - pattern: 'kafka.cluster<type=(\S+), name=(\S+), topic=(\S+), partition=(\S+)><>(Value)'
-    name: kafka_coordinator_transaction_$1_$2
-    type: GAUGE
-    labels:
-      type: "$1"
-      metric: "$2"
-      topic: "$3"
-      partition: "$4"
-      attribute: "$5"
       pat_id: "3.6"
 
 ##############
@@ -314,6 +317,16 @@ rules:
       delayedOperation: "$3"
       attribute: "$4"
       pat_id: "4.7"
+
+  - pattern: 'kafka.server<type=(\S+), name=(\S+), topic=(\S+)><>(.+):'
+    name: kafka_server_$1_$2_$4
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      topic: "$3"
+      attribute: "$4"
+      pat_id: "4.17"
   - pattern: 'kafka.server<type=(\S+), name=(\S+), clientId=(\S+)><>(.+):'
     name: kafka_server_$1_$2
     labels:
@@ -323,7 +336,7 @@ rules:
       attribute: "$4"
       pat_id: "4.8"
   - pattern: 'kafka.server<type=(\S+), name=ClusterId><>(Value):(.+)'
-    name: kafka_server_$1_$2
+    name: kafka_server_$1
     value: 1
     labels:
       type: "$1"
@@ -385,3 +398,17 @@ rules:
       metric: "$1"
       attribute: "$2"
       pat_id: "4.16"
+
+  ###############
+  #kafka.cluster#
+  ###############
+  - pattern: 'kafka.cluster<type=(\S+), name=(\S+), topic=(\S+), partition=(\S+)><>(Value)'
+    name: kafka_cluster_$1_$2
+    type: GAUGE
+    labels:
+      type: "$1"
+      metric: "$2"
+      topic: "$3"
+      partition: "$4"
+      attribute: "$5"
+      pat_id: "5.0"
