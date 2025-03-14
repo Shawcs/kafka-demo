@@ -9,5 +9,8 @@ Daily/seasonal off-peak hours: partition count > consumer instance count
 Daily/seasonal peak hours: partition count = consumer instance count
 
 Moreover, the number of partitions should be linked to the business growth forecast.
+>[source](https://www.confluent.io/blog/kafka-clusters-and-cluster-management/#:~:text=not%20auto%2Dscalable.-,An%20aside,-Tip%3A%20You%20can)
 
 Limits: single cluster is 200,000 partitions or 4,000 partitions per broker for zookeeper installation. In kraft even with 2 millions partitions no performance change observed 
+>[source](https://www.confluent.io/blog/kafka-without-zookeeper-a-sneak-peek/#scaling-up)
+
