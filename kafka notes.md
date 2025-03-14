@@ -36,37 +36,34 @@ full topic name template: < company_application_name >--< BusinessObjectName >--
 The name of your company logical regroupment. Field is mandatory
 
 ### BusinessObjectName
-Goals: Give the business name of the object that transit in the topic. Field is mandatory
+**Goals**: Give the business name of the object that transit in the topic. Field is mandatory
 
 ### FreePlaceholder
-Goals: This is a free field that can be use to better fit your needs, like technical functionality on your side. Field is optional
+**Goals**: This is a free field that can be use to better fit your needs, like technical functionality on your side. Field is optional
 
 > Avoid using it to much and don't use long string inside.
 
 ### Exposition
-Goals: Whether your topic is for internal (int) or external (ext) clients. This can be critical for some team to separate topic with strong contract and long support from the one that can drastically change and may be unstable. Field is mandatory
+**Goals**: Whether your topic is for internal (int) or external (ext) clients. This can be critical for some team to separate topic with strong contract and long support from the one that can drastically change and may be unstable. Field is mandatory
 
 This thumb rule will be:
 
-if you expose data to other SCS or even outside SQ use the ext name
-if the topic is solely for your own SCS or own squad use int name
-note
-
-Later this could be handled by a Kafka gateway more transparently.
-https://docs.conduktor.io/ or https://kroxylicious.io/
+if you expose data to others or even outside your company use the ext name
+if the topic is solely for your own or own team use int name
+> note: Later this could be handled by a Kafka gateway more transparently. https://docs.conduktor.io/ or https://kroxylicious.io/
 
 ### Typology
-Goals: it means to give information about what kind of purpose the topic serve. Field is mandatory
+**Goals**: it means to give information about what kind of purpose the topic serve. Field is mandatory
 
 This is the list of authorized values:
 
-reqest
-notification
-errors
-event
-entitycompact
-entityvolatile
-entitycompactvolatile
+- reqest
+- notification
+- errors
+- event
+- entitycompact
+- entityvolatile
+- entitycompactvolatile
 
 | **Owner is what** | **Owner send what** | **Data Retention** | **Typology** | **Typology Abbreviation** | **Example** |
 |-------------------|---------------------|--------------------|--------------|--------------------------|-------------|
@@ -79,10 +76,10 @@ entitycompactvolatile
 | Consumer and Producer | Errors information | Compact, Delete, Compact-Delete | Error | Err | Usually an internal topic used to manage error related to Kafka. |
 
 ### Version
-Goals: give the abbility to do breaking change in schema for topic without impacting your clients directly. Field is mandatory
+**Goals**: give the abbility to do breaking change in schema for topic without impacting your clients directly. Field is mandatory
 
 start at 1 monotonically increase +1 for each breaking change  
 
-### vExamples
+### Examples
 market data for exchange 1
-trading_app--marketdata--exchange-1--int--entcptvol--1
+trading_app--market--exchange-1--int--entcptvol--1
