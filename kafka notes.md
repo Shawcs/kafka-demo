@@ -89,7 +89,7 @@ trading_app--market--exchange-1--int--entcptvol--1
 
 # server configs
 
-- bvm.swappiness to the minimum possible value for your server type for both Kafka brokers as well as the zookeeper servers.
+- bvm.swappiness to the minimum possible value for your server type for both Kafka brokers as well as the zookeeper servers. [sources](https://docs.confluent.io/platform/current/kafka/post-deployment.html#tuning-virtual-memory)
 - check the memory used by page cache in buffer/cache column of: free -m -h 
 - file descriptor
   Increase the file descriptors limits to a very high value as much as 100,000.
