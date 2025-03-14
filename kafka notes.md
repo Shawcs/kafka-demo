@@ -14,6 +14,9 @@ Moreover, the number of partitions should be linked to the business growth forec
 Limits: single cluster is 200,000 partitions or 4,000 partitions per broker for zookeeper installation. In kraft even with 2 millions partitions no performance change observed 
 >[source](https://www.confluent.io/blog/kafka-without-zookeeper-a-sneak-peek/#scaling-up)
 
+As a rule of thumb, if you care about latency, it’s probably a good idea to limit the number of partitions per broker to 100 x b x r, where b is the number of brokers in a Kafka cluster and r is the replication factor.
+>[source](https://www.confluent.io/blog/how-choose-number-topics-partitions-kafka-cluster/#:~:text=As%20a%20rule%20of%20thumb%2C%20if%20you%20care%20about%20latency%2C%20it%E2%80%99s%20probably%20a%20good%20idea%20to%20limit%20the%20number%20of%20partitions%20per%20broker%20to%20100%20x%20b%20x%20r%2C%20where%20b%20is%20the%20number%20of%20brokers%20in%20a%20Kafka%20cluster%20and%20r%20is%20the%20replication%20factor.)
+
 # Cluster, when do we need more ?
 
 As much as possible, keep or aggregate all of your business-critical data in the same cluster—this facilitates faster business insights and timely action
@@ -83,3 +86,14 @@ start at 1 monotonically increase +1 for each breaking change
 ### Examples
 market data for exchange 1
 trading_app--market--exchange-1--int--entcptvol--1
+
+# server configs
+
+- bvm.swappiness to the minimum possible value for your server type for both Kafka brokers as well as the zookeeper servers.
+- check the memory used by page cache in buffer/cache column of: free -m -h 
+- file descriptor
+  Increase the file descriptors limits to a very high value as much as 100,000.
+  see the value for your process:
+  ps ax | grep <Name of the Kafka process>
+  cat /proc/{{process_id}}/limits | grep "Max open files"
+- num.recovery.threads.per.data.dir to at least the number of data directories
